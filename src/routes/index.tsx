@@ -91,10 +91,14 @@ function useArcCarousel(count: number) {
     const rel = (e.clientX - rect.left) / rect.width;
     target.current = clamp(rel * (count - 1));
   };
-  const onPointerLeave = () => {
+  const onPointerLeave = (e: React.PointerEvent<HTMLDivElement>) => {
     hoveringRef.current = false;
     draggingRef.current = false;
-    target.current = restValue; // settle back to a centered fan at rest
+    // Touch fires a "leave" the moment a finger lifts — that's a release,
+    // not the cursor wandering off, so keep whatever position the drag
+    // ended at instead of snapping back to center.
+    if (e.pointerType === "touch") return;
+    target.current = restValue; // mouse actually left — settle to a centered fan
   };
 
   const onWheel = (e: React.WheelEvent) => {
