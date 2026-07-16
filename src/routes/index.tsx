@@ -1,21 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
-import coverHero from "@/assets/cover_hero.jpg.asset.json";
-import stage2Full from "@/assets/stage2_fullbody_tight.jpg.asset.json";
-import principalRoles from "@/assets/principal_roles_group_tight.jpg.asset.json";
-import contemporaryPortrait from "@/assets/contemporary_portrait_tight.jpg.asset.json";
-import childhoodArchival from "@/assets/childhood_archival.jpg.asset.json";
-import handDetail from "@/assets/hand_detail.jpg.asset.json";
-import eyesDetail from "@/assets/eyes_detail.jpg.asset.json";
-import jewelryDetail from "@/assets/jewelry_detail.jpg.asset.json";
+import coverHero from "@/assets/cover_hero.jpg";
+import stage2Full from "@/assets/stage2_fullbody_tight.jpg";
+import principalRoles from "@/assets/principal_roles_group_tight.jpg";
+import contemporaryPortrait from "@/assets/contemporary_portrait_tight.jpg";
+import childhoodArchival from "@/assets/childhood_archival.jpg";
+import handDetail from "@/assets/hand_detail.jpg";
+import eyesDetail from "@/assets/eyes_detail.jpg";
+import jewelryDetail from "@/assets/jewelry_detail.jpg";
 
 export const Route = createFileRoute("/")({
   component: Portfolio,
   head: () => ({
     meta: [
-      { property: "og:image", content: coverHero.url },
-      { name: "twitter:image", content: coverHero.url },
+      { property: "og:image", content: coverHero },
+      { name: "twitter:image", content: coverHero },
     ],
   }),
 });
@@ -485,7 +485,7 @@ function Portfolio() {
       {/* 1. HERO */}
       <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
         <img
-          src={coverHero.url}
+          src={coverHero}
           alt="Mahati Bhikshu in Kuchipudi costume — red silk blouse and gold-woven silk drape, mudra raised, temple garlands behind."
           className="absolute inset-0 h-full w-full object-cover"
           style={{ objectPosition: "70% 30%" }}
@@ -576,7 +576,7 @@ function Portfolio() {
           numeral="I"
           title="Lineage"
           eyebrow="Stage One"
-          image={stage2Full.url}
+          image={stage2Full}
           alt="Mahati Bhikshu in a pink and gold silk Kuchipudi costume, mid-pose, against a temple-painted wall."
         />
         <div
@@ -613,7 +613,7 @@ function Portfolio() {
               >
                 <div className="border border-black">
                   <img
-                    src={childhoodArchival.url}
+                    src={childhoodArchival}
                     alt="Grainy archival photograph of Mahati Bhikshu at age eight in costume for Bala Narakasura."
                     loading="lazy"
                     className="block w-full"
@@ -653,14 +653,14 @@ function Portfolio() {
           numeral="II"
           title="Nritta & Abhinaya"
           eyebrow="Stage Two"
-          image={coverHero.url}
+          image={coverHero}
           alt="Portrait of Mahati Bhikshu in traditional red and gold Kuchipudi costume."
         />
 
         {/* Full-bleed portrait with pull-quote overlay */}
         <div className="relative h-[92svh] min-h-[600px] w-full overflow-hidden">
           <img
-            src={stage2Full.url}
+            src={stage2Full}
             alt="Full body Kuchipudi stance in pink silk with gold border, arms raised, mid-tribhangi."
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
@@ -719,13 +719,13 @@ function Portfolio() {
               <GoldRule className="mt-8 w-16" />
               <div className="mt-8 grid grid-cols-2 gap-3">
                 <img
-                  src={jewelryDetail.url}
+                  src={jewelryDetail}
                   alt="Detail of temple jewellery: kemp necklace with pearls and jhumka earring."
                   loading="lazy"
                   className="aspect-[4/5] w-full object-cover"
                 />
                 <img
-                  src={eyesDetail.url}
+                  src={eyesDetail}
                   alt="Extreme close-up of kohl-lined eyes and bindi — abhinaya through the gaze."
                   loading="lazy"
                   className="aspect-[4/5] w-full object-cover"
@@ -772,7 +772,7 @@ function Portfolio() {
             <div className="mt-8 grid grid-cols-12 gap-3 md:gap-5">
               <Reveal className="col-span-12 md:col-span-8 md:row-span-2">
                 <img
-                  src={eyesDetail.url}
+                  src={eyesDetail}
                   alt="Close-up of eyes with dramatic kohl and bindi — the language of drishti."
                   loading="lazy"
                   className="block h-full w-full object-cover"
@@ -781,7 +781,7 @@ function Portfolio() {
               </Reveal>
               <Reveal className="col-span-6 md:col-span-4" delay={120}>
                 <img
-                  src={jewelryDetail.url}
+                  src={jewelryDetail}
                   alt="Temple jewellery detail with kemp stones and pearl drops."
                   loading="lazy"
                   className="block h-full w-full object-cover"
@@ -790,7 +790,7 @@ function Portfolio() {
               </Reveal>
               <Reveal className="col-span-6 md:col-span-4" delay={200}>
                 <img
-                  src={handDetail.url}
+                  src={handDetail}
                   alt="Hand held in a Kuchipudi mudra with red-tipped fingers and pearl bracelets."
                   loading="lazy"
                   className="block h-full w-full object-cover"
@@ -837,27 +837,27 @@ function Portfolio() {
               className="mt-12"
               items={[
                 {
-                  src: stage2Full.url,
+                  src: stage2Full,
                   title: "TSNA Kaleswaram Festival",
                   alt: "Solo Kuchipudi performance at the TSNA Kaleswaram Festival.",
                 },
                 {
-                  src: coverHero.url,
+                  src: coverHero,
                   title: "TSNA Dussehra Festival",
                   alt: "Performance at the TSNA Dussehra Festival.",
                 },
                 {
-                  src: stage2Full.url,
+                  src: stage2Full,
                   title: "Tirupati Utsavalu",
                   alt: "Performance during Tirupati Utsavalu.",
                 },
                 {
-                  src: coverHero.url,
+                  src: coverHero,
                   title: "Sivaratri Brahmotsavalu, Sri Kalahasti",
                   alt: "Sivaratri Brahmotsavalu at Sri Kalahasti temple.",
                 },
                 {
-                  src: stage2Full.url,
+                  src: stage2Full,
                   title: "Solo Recital — World Bank delegates at ASCI",
                   alt: "Solo recital for World Bank delegates at the Administrative Staff College of India.",
                 },
@@ -911,7 +911,7 @@ function Portfolio() {
         {/* Principal Roles — full-bleed */}
         <div className="relative w-full">
           <img
-            src={principalRoles.url}
+            src={principalRoles}
             alt="Three dancers on stage — Padmavathi, Lakshmi, and Venkateswara in Sri Venkateswara Vilasam."
             loading="lazy"
             className="block w-full"
@@ -938,7 +938,7 @@ function Portfolio() {
           numeral="III"
           title="Beyond Kuchipudi"
           eyebrow="Stage Three"
-          image={contemporaryPortrait.url}
+          image={contemporaryPortrait}
           alt="Contemporary portrait of Mahati Bhikshu in a checked handloom sari, hand raised to her face."
         />
 
@@ -1010,7 +1010,7 @@ function Portfolio() {
           numeral="IV"
           title="The Second Stage"
           eyebrow="Stage Four · Cinema"
-          image={contemporaryPortrait.url}
+          image={contemporaryPortrait}
           alt="Editorial portrait — dark backdrop, silver nose ring, contemporary sari."
           tone="cinema"
         />
@@ -1099,7 +1099,7 @@ function Portfolio() {
         {/* Signature hero moment — full-bleed silence */}
         <div className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
           <img
-            src={stage2Full.url}
+            src={stage2Full}
             alt="Full-length Kuchipudi stance — pink and gold silk, mid-tribhangi, uninterrupted."
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
@@ -1124,7 +1124,7 @@ function Portfolio() {
           numeral="V"
           title="Natyavedam"
           eyebrow="Stage Five · Legacy"
-          image={contemporaryPortrait.url}
+          image={contemporaryPortrait}
           alt="Contemporary editorial portrait."
         />
         <div className="px-6 py-24 md:py-32">
@@ -1159,7 +1159,7 @@ function Portfolio() {
       {/* 9. CLOSE / CONTACT */}
       <section className="relative w-full overflow-hidden">
         <img
-          src={coverHero.url}
+          src={coverHero}
           alt="Mahati Bhikshu in Kuchipudi costume, closing plate."
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
