@@ -80,10 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
       { name: "description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
       { name: "author", content: "Mahati Bhikshu" },
-      { property: "og:title", content: "Mahati Bhikshu — One life. Many stages." },
-      { property: "og:description", content: "Editorial portfolio of Kuchipudi artist, actor, choreographer, and educator Mahati Bhikshu." },
+      { property: "og:title", content: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
+      { property: "og:description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
+      { name: "twitter:description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png" },
     ],
     links: [
       {
