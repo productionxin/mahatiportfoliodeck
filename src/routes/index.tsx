@@ -46,15 +46,20 @@ function useReveal<T extends HTMLElement>() {
 
 /**
  * Drives a 3D coverflow / arc carousel: a continuous floating "focus index"
- * that's nudged by drag or wheel, then eased toward its target every frame
- * (rAF lerp) so motion feels springy rather than jump-cut. Cards read the
- * returned `value` and place themselves relative to it — see ArcCarousel.
+ * that follows the cursor's horizontal position across the track — no click
+ * or drag required, just move the mouse over it, the way the reference
+ * (Framer-style) carousels behave. Wheel-scroll and touch-drag are kept as
+ * fallbacks for trackpads and touch devices. The target is eased toward
+ * every frame (rAF lerp) so motion feels springy, not jump-cut. Rests
+ * centered on the middle card when nothing is hovering it.
  */
 function useArcCarousel(count: number) {
-  const target = useRef(0);
-  const current = useRef(0);
-  const [value, setValue] = useState(0);
+  const restValue = (count - 1) / 2;
+  const target = useRef(restValue);
+  const current = useRef(restValue);
+  const [value, setValue] = useState(restValue);
   const raf = useRef<number | null>(null);
+  const hoveringRef = useRef(false);
   const draggingRef = useRef(false);
   const movedRef = useRef(false);
   const dragStart = useRef({ x: 0, target: 0 });
@@ -63,7 +68,7 @@ function useArcCarousel(count: number) {
   useEffect(() => {
     reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const tick = () => {
-      const ease = reduceMotionRef.current ? 1 : 0.12;
+      const ease = reduceMotionRef.current ? 1 : 0.09;
       current.current += (target.current - current.current) * ease;
       if (Math.abs(current.current - target.current) < 0.001) current.current = target.current;
       setValue(current.current);
@@ -77,18 +82,36 @@ function useArcCarousel(count: number) {
 
   const clamp = (v: number) => Math.max(0, Math.min(count - 1, v));
 
+  // Primary interaction: cursor position across the track maps directly to
+  // focus index — moving the mouse left-to-right fans the cards, no drag.
+  const onPointerMoveHover = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (draggingRef.current) return; // touch-drag takes over below
+    hoveringRef.current = true;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const rel = (e.clientX - rect.left) / rect.width;
+    target.current = clamp(rel * (count - 1));
+  };
+  const onPointerLeave = () => {
+    hoveringRef.current = false;
+    draggingRef.current = false;
+    target.current = restValue; // settle back to a centered fan at rest
+  };
+
   const onWheel = (e: React.WheelEvent) => {
     if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
     target.current = clamp(target.current + e.deltaY * 0.0028);
     e.preventDefault();
   };
+
+  // Touch fallback: pointer devices without hover (fine pointer) drag instead.
   const onPointerDown = (e: React.PointerEvent) => {
+    if (e.pointerType !== "touch") return;
     draggingRef.current = true;
     movedRef.current = false;
     dragStart.current = { x: e.clientX, target: target.current };
     (e.currentTarget as Element).setPointerCapture(e.pointerId);
   };
-  const onPointerMove = (e: React.PointerEvent) => {
+  const onPointerMoveDrag = (e: React.PointerEvent) => {
     if (!draggingRef.current) return;
     const dx = e.clientX - dragStart.current.x;
     if (Math.abs(dx) > 4) movedRef.current = true;
@@ -101,7 +124,19 @@ function useArcCarousel(count: number) {
     target.current = clamp(i);
   };
 
-  return { value, onWheel, onPointerDown, onPointerMove, onPointerUp, goTo, movedRef };
+  return {
+    value,
+    onWheel,
+    onPointerMove: (e: React.PointerEvent<HTMLDivElement>) => {
+      onPointerMoveHover(e);
+      onPointerMoveDrag(e);
+    },
+    onPointerDown,
+    onPointerUp,
+    onPointerLeave,
+    goTo,
+    movedRef,
+  };
 }
 
 function useActiveStage(ids: string[]) {
@@ -296,7 +331,7 @@ function ArcTrack<T>({
   renderCard,
   onSelect,
   height,
-  cursorLabel = "Drag",
+  cursorLabel = "Move",
 }: {
   items: T[];
   cardWidth: number;
@@ -307,7 +342,7 @@ function ArcTrack<T>({
   height: number;
   cursorLabel?: string;
 }) {
-  const { value, onWheel, onPointerDown, onPointerMove, onPointerUp, movedRef } =
+  const { value, onWheel, onPointerDown, onPointerMove, onPointerUp, onPointerLeave, movedRef } =
     useArcCarousel(items.length);
 
   return (
@@ -319,7 +354,7 @@ function ArcTrack<T>({
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      onPointerLeave={onPointerUp}
+      onPointerLeave={onPointerLeave}
     >
       <div
         className="absolute inset-0 flex items-center justify-center"
