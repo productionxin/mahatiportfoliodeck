@@ -44,6 +44,58 @@ function useReveal<T extends HTMLElement>() {
   return ref;
 }
 
+/** Horizontal drag-to-scroll + wheel-to-horizontal panning for carousels. */
+function useDragScroll<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const movedRef = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return; // fall back to native touch/trackpad scroll
+
+    let isDown = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // let native horizontal gestures through
+      el.scrollLeft += e.deltaY;
+      e.preventDefault();
+    };
+    const onDown = (e: PointerEvent) => {
+      isDown = true;
+      movedRef.current = false;
+      startX = e.clientX;
+      startScroll = el.scrollLeft;
+      el.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) movedRef.current = true;
+      el.scrollLeft = startScroll - dx;
+    };
+    const onUp = () => {
+      isDown = false;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointerleave", onUp);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointerleave", onUp);
+    };
+  }, []);
+  return { ref, movedRef };
+}
+
 function useActiveStage(ids: string[]) {
   const [active, setActive] = useState<string | null>(null);
   useEffect(() => {
@@ -108,6 +160,7 @@ function WatchMarker({
       rel={href.startsWith("http") ? "noreferrer noopener" : undefined}
       className="group inline-flex items-center gap-4"
       aria-label={label}
+      data-cursor="Watch"
     >
       <span
         className="relative grid place-items-center rounded-full border transition-transform duration-500 group-hover:scale-105"
@@ -145,6 +198,80 @@ function GoldRule({ className = "" }: { className?: string }) {
       className={`block ${className}`}
       style={{ height: 1, background: "var(--color-gold-500)" }}
     />
+  );
+}
+
+/**
+ * Custom cursor for pointer:fine devices — a small ring that follows the
+ * mouse with spring easing and picks up a label from the nearest ancestor's
+ * `data-cursor` attribute. Only ever rendered over deliberately interactive
+ * areas (carousels, watch markers) — not applied globally.
+ */
+function CustomCursor() {
+  const dotRef = useRef<HTMLDivElement | null>(null);
+  const target = useRef({ x: 0, y: 0 });
+  const pos = useRef({ x: 0, y: 0 });
+  const raf = useRef<number | null>(null);
+  const [label, setLabel] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!fine || reduceMotion) return;
+    setEnabled(true);
+
+    const onMove = (e: MouseEvent) => {
+      target.current = { x: e.clientX, y: e.clientY };
+      const el = (e.target as HTMLElement)?.closest?.("[data-cursor]") as HTMLElement | null;
+      if (el) {
+        setLabel(el.getAttribute("data-cursor"));
+        setVisible(true);
+      } else {
+        setVisible(false);
+      }
+    };
+    const tick = () => {
+      pos.current.x += (target.current.x - pos.current.x) * 0.2;
+      pos.current.y += (target.current.y - pos.current.y) * 0.2;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%)`;
+      }
+      raf.current = requestAnimationFrame(tick);
+    };
+    window.addEventListener("mousemove", onMove);
+    raf.current = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      if (raf.current) cancelAnimationFrame(raf.current);
+    };
+  }, []);
+
+  if (!enabled) return null;
+
+  return (
+    <div
+      ref={dotRef}
+      aria-hidden
+      className="pointer-events-none fixed left-0 top-0 z-[60] grid place-items-center rounded-full"
+      style={{
+        width: 76,
+        height: 76,
+        border: "1px solid var(--color-gold-500)",
+        background: "rgba(21,19,15,0.55)",
+        backdropFilter: "blur(2px)",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 220ms ease",
+      }}
+    >
+      <span
+        className="eyebrow"
+        style={{ color: "var(--color-on-ink)", fontSize: 10 }}
+      >
+        {label}
+      </span>
+    </div>
   );
 }
 
@@ -229,6 +356,7 @@ function Portfolio() {
     >
       {/* Sticky stage indicator */}
       <StageIndicator activeId={activeStage} />
+      <CustomCursor />
 
       {/* 1. HERO */}
       <section className="relative h-[100svh] min-h-[640px] w-full overflow-hidden">
@@ -820,18 +948,15 @@ function Portfolio() {
               <GoldRule className="w-24" />
             </Reveal>
 
-            <div className="mt-12 grid gap-6 md:grid-cols-2">
-              {[
+            <FilmCarousel
+              className="mt-12"
+              films={[
                 { title: "SITA", note: "Debut — opposite Sonu Sood" },
                 { title: "RADHE SHYAM", note: "Feature" },
                 { title: "GEORGE REDDY", note: "Feature" },
                 { title: "KINNERASANI", note: "Titular role — most recent" },
-              ].map((f, i) => (
-                <Reveal key={f.title} delay={i * 90}>
-                  <FilmCard title={f.title} note={f.note} />
-                </Reveal>
-              ))}
-            </div>
+              ]}
+            />
 
             {/* TODO: Replace href="#" with real YouTube URLs — Kinnerasani trailer
                 and the song "Ninu Nanu Dache" — once supplied by client. */}
@@ -1154,6 +1279,7 @@ function Lightbox({
   className?: string;
 }) {
   const [open, setOpen] = useState<number | null>(null);
+  const { ref: trackRef, movedRef } = useDragScroll<HTMLUListElement>();
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -1168,14 +1294,25 @@ function Lightbox({
 
   return (
     <>
+      {/* Horizontal drag/wheel carousel — click a frame to open it full-screen. */}
       <ul
-        className={`grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 ${className}`}
+        ref={trackRef}
+        data-cursor="Drag"
+        className={`no-scrollbar flex touch-pan-y gap-5 overflow-x-auto pb-2 ${className}`}
+        style={{ scrollSnapType: "x proximity" }}
       >
         {items.map((it, i) => (
-          <li key={it.title}>
+          <li
+            key={it.title}
+            className="shrink-0"
+            style={{ width: "min(78vw, 340px)", scrollSnapAlign: "start" }}
+          >
             <button
               type="button"
-              onClick={() => setOpen(i)}
+              data-cursor="View"
+              onClick={() => {
+                if (!movedRef.current) setOpen(i);
+              }}
               className="group block w-full text-left"
             >
               <div className="relative aspect-[4/5] w-full overflow-hidden">
@@ -1183,7 +1320,8 @@ function Lightbox({
                   src={it.src}
                   alt={it.alt}
                   loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  draggable={false}
+                  className="h-full w-full select-none object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
                 />
                 <span
                   aria-hidden
@@ -1328,6 +1466,39 @@ function Timeline({
         </Reveal>
       ))}
     </ol>
+  );
+}
+
+function FilmCarousel({
+  films,
+  className = "",
+}: {
+  films: { title: string; note: string }[];
+  className?: string;
+}) {
+  const { ref: trackRef } = useDragScroll<HTMLDivElement>();
+  return (
+    <div
+      ref={trackRef}
+      data-cursor="Drag"
+      className={`no-scrollbar flex touch-pan-y gap-6 overflow-x-auto pb-2 ${className}`}
+      style={{ scrollSnapType: "x proximity" }}
+    >
+      {films.map((f, i) => (
+        <Reveal
+          key={f.title}
+          delay={i * 90}
+          className="shrink-0"
+        >
+          <div
+            data-cursor="View"
+            style={{ width: "min(80vw, 380px)", scrollSnapAlign: "start" }}
+          >
+            <FilmCard title={f.title} note={f.note} />
+          </div>
+        </Reveal>
+      ))}
+    </div>
   );
 }
 

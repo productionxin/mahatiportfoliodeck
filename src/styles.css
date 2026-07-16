@@ -10,8 +10,8 @@
  */
 
 @theme inline {
-  --font-display: "Bodoni Moda", ui-serif, Georgia, serif;
-  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --color-ink-900: #15130F;
   --color-ink-800: #211D17;
@@ -183,4 +183,26 @@
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* Custom cursor: hide the native cursor only where our cursor takes over,
+   and only on fine-pointer (mouse) devices with motion allowed. */
+@media (pointer: fine) {
+  [data-cursor] {
+    cursor: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-cursor] {
+    cursor: auto;
+  }
+}
+
+/* Drag-scroll carousels: no visible scrollbar, native momentum on touch. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
