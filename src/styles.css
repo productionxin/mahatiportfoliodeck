@@ -159,11 +159,6 @@
 }
 
 /* Editorial utilities */
-@utility font-display {
-  font-family: var(--font-display);
-  font-optical-sizing: auto;
-}
-
 @utility eyebrow {
   font-family: var(--font-sans);
   font-size: 11px;
