@@ -44,56 +44,64 @@ function useReveal<T extends HTMLElement>() {
   return ref;
 }
 
-/** Horizontal drag-to-scroll + wheel-to-horizontal panning for carousels. */
-function useDragScroll<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
+/**
+ * Drives a 3D coverflow / arc carousel: a continuous floating "focus index"
+ * that's nudged by drag or wheel, then eased toward its target every frame
+ * (rAF lerp) so motion feels springy rather than jump-cut. Cards read the
+ * returned `value` and place themselves relative to it — see ArcCarousel.
+ */
+function useArcCarousel(count: number) {
+  const target = useRef(0);
+  const current = useRef(0);
+  const [value, setValue] = useState(0);
+  const raf = useRef<number | null>(null);
+  const draggingRef = useRef(false);
   const movedRef = useRef(false);
+  const dragStart = useRef({ x: 0, target: 0 });
+  const reduceMotionRef = useRef(false);
+
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return; // fall back to native touch/trackpad scroll
-
-    let isDown = false;
-    let startX = 0;
-    let startScroll = 0;
-
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // let native horizontal gestures through
-      el.scrollLeft += e.deltaY;
-      e.preventDefault();
+    reduceMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const tick = () => {
+      const ease = reduceMotionRef.current ? 1 : 0.12;
+      current.current += (target.current - current.current) * ease;
+      if (Math.abs(current.current - target.current) < 0.001) current.current = target.current;
+      setValue(current.current);
+      raf.current = requestAnimationFrame(tick);
     };
-    const onDown = (e: PointerEvent) => {
-      isDown = true;
-      movedRef.current = false;
-      startX = e.clientX;
-      startScroll = el.scrollLeft;
-      el.setPointerCapture(e.pointerId);
-    };
-    const onMove = (e: PointerEvent) => {
-      if (!isDown) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 4) movedRef.current = true;
-      el.scrollLeft = startScroll - dx;
-    };
-    const onUp = () => {
-      isDown = false;
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("pointerdown", onDown);
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerup", onUp);
-    el.addEventListener("pointerleave", onUp);
+    raf.current = requestAnimationFrame(tick);
     return () => {
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("pointerdown", onDown);
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerup", onUp);
-      el.removeEventListener("pointerleave", onUp);
+      if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, []);
-  return { ref, movedRef };
+
+  const clamp = (v: number) => Math.max(0, Math.min(count - 1, v));
+
+  const onWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+    target.current = clamp(target.current + e.deltaY * 0.0028);
+    e.preventDefault();
+  };
+  const onPointerDown = (e: React.PointerEvent) => {
+    draggingRef.current = true;
+    movedRef.current = false;
+    dragStart.current = { x: e.clientX, target: target.current };
+    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!draggingRef.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    if (Math.abs(dx) > 4) movedRef.current = true;
+    target.current = clamp(dragStart.current.target - dx / 150);
+  };
+  const onPointerUp = () => {
+    draggingRef.current = false;
+  };
+  const goTo = (i: number) => {
+    target.current = clamp(i);
+  };
+
+  return { value, onWheel, onPointerDown, onPointerMove, onPointerUp, goTo, movedRef };
 }
 
 function useActiveStage(ids: string[]) {
@@ -271,6 +279,83 @@ function CustomCursor() {
       >
         {label}
       </span>
+    </div>
+  );
+}
+
+/**
+ * A 3D coverflow / arc carousel track: cards fan out in a shallow perspective
+ * arc around a continuous focus value, receding in depth and opacity as they
+ * move off-center. Drag or wheel-scroll to move through it.
+ */
+function ArcTrack<T>({
+  items,
+  cardWidth,
+  cardHeight,
+  spacing,
+  renderCard,
+  onSelect,
+  height,
+  cursorLabel = "Drag",
+}: {
+  items: T[];
+  cardWidth: number;
+  cardHeight: number;
+  spacing: number;
+  renderCard: (item: T, index: number, focused: boolean) => React.ReactNode;
+  onSelect?: (index: number) => void;
+  height: number;
+  cursorLabel?: string;
+}) {
+  const { value, onWheel, onPointerDown, onPointerMove, onPointerUp, movedRef } =
+    useArcCarousel(items.length);
+
+  return (
+    <div
+      className="relative w-full touch-pan-y select-none"
+      style={{ height, perspective: 1600 }}
+      data-cursor={cursorLabel}
+      onWheel={onWheel}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerLeave={onPointerUp}
+    >
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        {items.map((item, i) => {
+          const o = i - value;
+          const focused = Math.abs(o) < 0.5;
+          const angle = Math.max(-58, Math.min(58, o * 16));
+          const tx = o * spacing;
+          const tz = -Math.min(Math.abs(o), 4) * 130;
+          const scale = Math.max(0.72, 1 - Math.abs(o) * 0.14);
+          const opacity = Math.max(0.22, 1 - Math.abs(o) * 0.32);
+          return (
+            <div
+              key={i}
+              data-cursor={focused ? "View" : undefined}
+              onClick={() => {
+                if (focused && !movedRef.current) onSelect?.(i);
+              }}
+              className="absolute"
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+                transform: `translate3d(${tx}px, 0, ${tz}px) rotateY(${angle}deg) scale(${scale})`,
+                opacity,
+                zIndex: 1000 - Math.round(Math.abs(o) * 10),
+                transition: "box-shadow 400ms ease",
+                cursor: focused ? "pointer" : "default",
+              }}
+            >
+              {renderCard(item, i, focused)}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -1279,7 +1364,6 @@ function Lightbox({
   className?: string;
 }) {
   const [open, setOpen] = useState<number | null>(null);
-  const { ref: trackRef, movedRef } = useDragScroll<HTMLUListElement>();
   useEffect(() => {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -1294,62 +1378,70 @@ function Lightbox({
 
   return (
     <>
-      {/* Horizontal drag/wheel carousel — click a frame to open it full-screen. */}
-      <ul
-        ref={trackRef}
-        data-cursor="Drag"
-        className={`no-scrollbar flex touch-pan-y gap-5 overflow-x-auto pb-2 ${className}`}
-        style={{ scrollSnapType: "x proximity" }}
-      >
-        {items.map((it, i) => (
-          <li
-            key={it.title}
-            className="shrink-0"
-            style={{ width: "min(78vw, 340px)", scrollSnapAlign: "start" }}
-          >
-            <button
-              type="button"
-              data-cursor="View"
-              onClick={() => {
-                if (!movedRef.current) setOpen(i);
-              }}
-              className="group block w-full text-left"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden">
+      {/* 3D coverflow — drag or wheel-scroll through it, click the centered frame to open full-screen. */}
+      <div className={className}>
+        <ArcTrack
+          items={items}
+          cardWidth={280}
+          cardHeight={350}
+          spacing={190}
+          height={420}
+          onSelect={(i) => setOpen(i)}
+          renderCard={(it, i, focused) => (
+            <div className="group h-full w-full text-left">
+              <div
+                className="relative h-[85%] w-full overflow-hidden"
+                style={{
+                  boxShadow: focused
+                    ? "0 30px 60px -20px rgba(21,19,15,0.55)"
+                    : "0 12px 30px -16px rgba(21,19,15,0.4)",
+                }}
+              >
                 <img
                   src={it.src}
                   alt={it.alt}
                   loading="lazy"
                   draggable={false}
-                  className="h-full w-full select-none object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  className="h-full w-full select-none object-cover"
                 />
                 <span
                   aria-hidden
-                  className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  className="absolute inset-0"
                   style={{
                     background:
-                      "linear-gradient(180deg, rgba(21,19,15,0) 40%, rgba(21,19,15,0.75) 100%)",
+                      "linear-gradient(180deg, rgba(21,19,15,0) 55%, rgba(21,19,15,0.7) 100%)",
+                    opacity: focused ? 0 : 0.55,
+                    transition: "opacity 400ms ease",
                   }}
                 />
               </div>
               <div className="mt-3 flex items-baseline justify-between gap-4">
                 <span
                   className="font-display italic"
-                  style={{ color: "var(--color-on-ink)", fontSize: "1.05rem" }}
+                  style={{
+                    color: "var(--color-on-ink)",
+                    fontSize: "1.05rem",
+                    opacity: focused ? 1 : 0,
+                    transition: "opacity 300ms ease",
+                  }}
                 >
                   {it.title}
                 </span>
                 <span
                   className="eyebrow"
-                  style={{ color: "var(--color-gold-500)" }}
+                  style={{
+                    color: "var(--color-gold-500)",
+                    opacity: focused ? 1 : 0,
+                    transition: "opacity 300ms ease",
+                  }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-            </button>
-          </li>
-        ))}
-      </ul>
+            </div>
+          )}
+        />
+      </div>
 
       {open !== null && (
         <div
@@ -1476,28 +1568,27 @@ function FilmCarousel({
   films: { title: string; note: string }[];
   className?: string;
 }) {
-  const { ref: trackRef } = useDragScroll<HTMLDivElement>();
   return (
-    <div
-      ref={trackRef}
-      data-cursor="Drag"
-      className={`no-scrollbar flex touch-pan-y gap-6 overflow-x-auto pb-2 ${className}`}
-      style={{ scrollSnapType: "x proximity" }}
-    >
-      {films.map((f, i) => (
-        <Reveal
-          key={f.title}
-          delay={i * 90}
-          className="shrink-0"
-        >
+    <div className={className}>
+      <ArcTrack
+        items={films}
+        cardWidth={340}
+        cardHeight={191}
+        spacing={230}
+        height={280}
+        renderCard={(f, _i, focused) => (
           <div
-            data-cursor="View"
-            style={{ width: "min(80vw, 380px)", scrollSnapAlign: "start" }}
+            style={{
+              boxShadow: focused
+                ? "0 30px 60px -20px rgba(21,19,15,0.6)"
+                : "0 12px 30px -16px rgba(21,19,15,0.45)",
+              height: "100%",
+            }}
           >
             <FilmCard title={f.title} note={f.note} />
           </div>
-        </Reveal>
-      ))}
+        )}
+      />
     </div>
   );
 }
