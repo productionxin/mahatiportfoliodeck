@@ -24,6 +24,10 @@ import gallery07 from "@/assets/gallery_07.jpg";
 import gallery08 from "@/assets/gallery_08.jpg";
 import gallery09 from "@/assets/gallery_09.jpg";
 import gallery10 from "@/assets/gallery_10.jpg";
+import filmSita from "@/assets/film_sita.jpg";
+import filmRadheShyam from "@/assets/film_radhe_shyam.jpg";
+import filmGeorgeReddy from "@/assets/film_george_reddy.jpg";
+import filmKinnerasani from "@/assets/film_kinnerasani.jpg";
 
 export const Route = createFileRoute("/")({
   component: Portfolio,
@@ -1153,10 +1157,10 @@ function Portfolio() {
             <FilmCarousel
               className="mt-12"
               films={[
-                { title: "SITA", note: "My debut — opposite Sonu Sood" },
-                { title: "RADHE SHYAM", note: "Feature" },
-                { title: "GEORGE REDDY", note: "Feature" },
-                { title: "KINNERASANI", note: "Titular role — most recent" },
+                { title: "SITA", note: "My debut — opposite Sonu Sood", image: filmSita },
+                { title: "RADHE SHYAM", note: "Feature", image: filmRadheShyam },
+                { title: "GEORGE REDDY", note: "Feature", image: filmGeorgeReddy },
+                { title: "KINNERASANI", note: "Titular role — most recent", image: filmKinnerasani },
               ]}
             />
 
@@ -1502,7 +1506,7 @@ function Lightbox({
           items={items}
           cardWidth={280}
           cardHeight={350}
-          spacing={190}
+          spacing={330}
           height={420}
           onSelect={(i) => setOpen(i)}
           renderCard={(it, i, focused) => (
@@ -1683,7 +1687,7 @@ function FilmCarousel({
   films,
   className = "",
 }: {
-  films: { title: string; note: string }[];
+  films: { title: string; note: string; image: string }[];
   className?: string;
 }) {
   return (
@@ -1692,8 +1696,9 @@ function FilmCarousel({
         items={films}
         cardWidth={340}
         cardHeight={191}
-        spacing={230}
+        spacing={400}
         height={280}
+        cursorLabel="View"
         renderCard={(f, _i, focused) => (
           <div
             style={{
@@ -1703,7 +1708,7 @@ function FilmCarousel({
               height: "100%",
             }}
           >
-            <FilmCard title={f.title} note={f.note} />
+            <FilmCard title={f.title} note={f.note} image={f.image} />
           </div>
         )}
       />
@@ -1711,7 +1716,7 @@ function FilmCarousel({
   );
 }
 
-function FilmCard({ title, note }: { title: string; note: string }) {
+function FilmCard({ title, note, image }: { title: string; note: string; image: string }) {
   return (
     <div
       className="relative aspect-[16/9] overflow-hidden"
@@ -1720,15 +1725,29 @@ function FilmCard({ title, note }: { title: string; note: string }) {
         background: "var(--color-ink-800)",
       }}
     >
+      <img
+        src={image}
+        alt={`Film still from ${title}, featuring Mahati Bhikshu.`}
+        loading="lazy"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(21,19,15,0.15) 0%, rgba(21,19,15,0.35) 55%, rgba(21,19,15,0.88) 100%)",
+        }}
+      />
       <div
         aria-hidden
         className="absolute inset-2"
-        style={{ border: "1px solid rgba(184,138,62,0.35)" }}
+        style={{ border: "1px solid rgba(184,138,62,0.45)" }}
       />
       <div className="relative flex h-full flex-col justify-between p-6 md:p-8">
         <span
           className="eyebrow"
-          style={{ color: "var(--color-oxblood-600)" }}
+          style={{ color: "var(--color-gold-400)" }}
         >
           Film
         </span>
@@ -1741,6 +1760,7 @@ function FilmCard({ title, note }: { title: string; note: string }) {
               fontWeight: 500,
               letterSpacing: "0.02em",
               lineHeight: 1,
+              textShadow: "0 2px 12px rgba(0,0,0,0.6)",
             }}
           >
             {title}
