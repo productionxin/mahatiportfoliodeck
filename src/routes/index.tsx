@@ -2,13 +2,28 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import coverHero from "@/assets/cover_hero.jpg";
-import stage2Full from "@/assets/stage2_fullbody_tight.jpg";
 import principalRoles from "@/assets/principal_roles_group_tight.jpg";
 import contemporaryPortrait from "@/assets/contemporary_portrait_tight.jpg";
 import childhoodArchival from "@/assets/childhood_archival.jpg";
 import handDetail from "@/assets/hand_detail.jpg";
 import eyesDetail from "@/assets/eyes_detail.jpg";
 import jewelryDetail from "@/assets/jewelry_detail.jpg";
+import awardCeremony from "@/assets/award_ceremony.jpg";
+import felicitation from "@/assets/felicitation.jpg";
+import outdoorPortrait from "@/assets/outdoor_portrait.jpg";
+import outdoorFullpose from "@/assets/outdoor_fullpose.jpg";
+import repertoireStudio from "@/assets/repertoire_studio.jpg";
+import repertoireStudio2 from "@/assets/repertoire_studio_2.jpg";
+import gallery01 from "@/assets/gallery_01.jpg";
+import gallery02 from "@/assets/gallery_02.jpg";
+import gallery03 from "@/assets/gallery_03.jpg";
+import gallery04 from "@/assets/gallery_04.jpg";
+import gallery05 from "@/assets/gallery_05.jpg";
+import gallery06 from "@/assets/gallery_06.jpg";
+import gallery07 from "@/assets/gallery_07.jpg";
+import gallery08 from "@/assets/gallery_08.jpg";
+import gallery09 from "@/assets/gallery_09.jpg";
+import gallery10 from "@/assets/gallery_10.jpg";
 
 export const Route = createFileRoute("/")({
   component: Portfolio,
@@ -558,7 +573,7 @@ function Portfolio() {
               letterSpacing: "-0.01em",
             }}
           >
-            “One life. Many stages.”
+            "One life. Many stages."
           </blockquote>
           <GoldRule className="mx-auto mt-12 w-16" />
           <p
@@ -576,8 +591,8 @@ function Portfolio() {
           numeral="I"
           title="Lineage"
           eyebrow="Stage One"
-          image={stage2Full}
-          alt="Mahati Bhikshu in a pink and gold silk Kuchipudi costume, mid-pose, against a temple-painted wall."
+          image={outdoorFullpose}
+          alt="Mahati Bhikshu in a green and magenta silk Kuchipudi costume, seated mudra, golden-hour light through trees behind her."
         />
         <div
           className="px-6 py-24 md:py-32"
@@ -589,17 +604,18 @@ function Portfolio() {
                 className="font-display text-2xl md:text-3xl"
                 style={{ color: "var(--color-on-ink)", lineHeight: 1.35 }}
               >
-                Daughter of <em>Dr. N.J. Bhikshu</em>, renowned theatre actor,
-                and <em>Prof. Aruna Bhikshu</em>, Kuchipudi exponent and
-                choreographer — she grew up inside the art form itself.
+                I am the daughter of <em>Dr. N.J. Bhikshu</em>, a renowned
+                theatre actor, and <em>Prof. Aruna Bhikshu</em>, a Kuchipudi
+                exponent and choreographer — I grew up inside the art form
+                itself.
               </p>
               <p
                 className="mt-8"
                 style={{ color: "var(--color-on-ink-dim)", maxWidth: "56ch" }}
               >
-                For more than twenty years, her mother has been her guru. The
-                studio was the living room; the stage was inherited before it
-                was chosen.
+                For more than twenty years, my mother has been my guru. The
+                studio was my living room; the stage was inherited before I
+                ever chose it.
               </p>
             </Reveal>
 
@@ -628,17 +644,17 @@ function Portfolio() {
                     className="eyebrow block"
                     style={{ color: "var(--color-gold-400)" }}
                   >
-                    Archival Plate — c. First Appearance
+                    Archival Plate — My First Appearance
                   </span>
                   <span className="mt-2 block font-display italic text-lg leading-snug">
                     Bala Narakasura, from the musical dance drama{" "}
-                    <em>Narakasura Vadha</em> — her first stage appearance,
+                    <em>Narakasura Vadha</em> — my first stage appearance,
                     age eight.
                   </span>
                   <span className="mt-3 block text-sm">
-                    That same year she played Bhakta Prahlada in{" "}
+                    That same year I played Bhakta Prahlada in{" "}
                     <em>Parikatha</em>, where <em>vachika abhinaya</em> — the
-                    voice as gesture — was introduced to her.
+                    voice as gesture — was introduced to me.
                   </span>
                 </figcaption>
               </figure>
@@ -653,18 +669,18 @@ function Portfolio() {
           numeral="II"
           title="Nritta & Abhinaya"
           eyebrow="Stage Two"
-          image={coverHero}
-          alt="Portrait of Mahati Bhikshu in traditional red and gold Kuchipudi costume."
+          image={gallery02}
+          alt="Mahati Bhikshu in traditional pink and gold Kuchipudi costume, mid-pose against a temple-painted wall."
         />
 
-        {/* Full-bleed portrait with pull-quote overlay */}
+        {/* Full-bleed portrait with pull-quote overlay — the felicitation moment */}
         <div className="relative h-[92svh] min-h-[600px] w-full overflow-hidden">
           <img
-            src={stage2Full}
-            alt="Full body Kuchipudi stance in pink silk with gold border, arms raised, mid-tribhangi."
+            src={felicitation}
+            alt="An elder draping a shawl over Mahati Bhikshu's shoulders on stage during a felicitation ceremony, her hands folded in gratitude."
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: "50% 30%" }}
+            style={{ objectPosition: "50% 20%" }}
           />
           <div
             className="absolute inset-0"
@@ -690,14 +706,14 @@ function Portfolio() {
                   lineHeight: 1.05,
                 }}
               >
-                “Twenty years under one guru,{" "}
-                <span style={{ color: "var(--color-gold-400)" }}>my mother.</span>”
+                "Twenty years under one guru,{" "}
+                <span style={{ color: "var(--color-gold-400)" }}>my mother.</span>"
               </p>
             </Reveal>
           </div>
         </div>
 
-        {/* Titles & Recognition */}
+        {/* Titles & Recognition — paired with the real award ceremony photo */}
         <div className="px-6 py-24 md:py-32">
           <div className="mx-auto grid max-w-[1200px] gap-16 md:grid-cols-12">
             <Reveal className="md:col-span-5">
@@ -717,20 +733,20 @@ function Portfolio() {
                 honours, and vidwat.
               </h3>
               <GoldRule className="mt-8 w-16" />
-              <div className="mt-8 grid grid-cols-2 gap-3">
+              <div className="relative mt-8 aspect-[3/2] w-full overflow-hidden">
                 <img
-                  src={jewelryDetail}
-                  alt="Detail of temple jewellery: kemp necklace with pearls and jhumka earring."
+                  src={awardCeremony}
+                  alt="Mahati Bhikshu on stage receiving the Nrithya Pratibha Puraskar award, flanked by dignitaries and her family."
                   loading="lazy"
-                  className="aspect-[4/5] w-full object-cover"
-                />
-                <img
-                  src={eyesDetail}
-                  alt="Extreme close-up of kohl-lined eyes and bindi — abhinaya through the gaze."
-                  loading="lazy"
-                  className="aspect-[4/5] w-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               </div>
+              <p
+                className="eyebrow mt-3"
+                style={{ color: "var(--color-on-parch-dim)" }}
+              >
+                Receiving the Nrithya Pratibha Puraskar
+              </p>
             </Reveal>
 
             <div className="md:col-span-7">
@@ -738,7 +754,7 @@ function Portfolio() {
                 items={[
                   {
                     title: "Doordarshan B-High Grade",
-                    body: "Awarded by India's national broadcaster — an official grading of her classical practice.",
+                    body: "Awarded by India's national broadcaster — an official grading of my classical practice.",
                   },
                   {
                     title: "Nritya Nipun",
@@ -746,7 +762,7 @@ function Portfolio() {
                   },
                   {
                     title: "Natya Vikas",
-                    body: "Recognition of sustained contribution to the growth and teaching of Kuchipudi.",
+                    body: "Recognition of my sustained contribution to the growth and teaching of Kuchipudi.",
                   },
                   {
                     title: "Nrithya Pratibha Puraskar",
@@ -809,7 +825,75 @@ function Portfolio() {
           </div>
         </div>
 
-        {/* Across India — gallery */}
+        {/* Repertoire — Bho Shambo & Kshetrayya Padam */}
+        <div
+          className="px-6 py-24 md:py-32"
+          style={{ background: "var(--color-ink-800)", color: "var(--color-on-ink)" }}
+        >
+          <div className="mx-auto max-w-[1200px]">
+            <Reveal>
+              <span className="eyebrow" style={{ color: "var(--color-gold-400)" }}>
+                Repertoire
+              </span>
+              <h3
+                className="font-display mt-4"
+                style={{
+                  fontSize: "clamp(2rem, 4.5vw, 3.4rem)",
+                  fontWeight: 500,
+                  lineHeight: 1.05,
+                }}
+              >
+                Bho Shambo. Kshetrayya Padam.
+              </h3>
+              <GoldRule className="mt-8 w-16" />
+              <p className="mt-8 max-w-[60ch]" style={{ color: "var(--color-on-ink-dim)" }}>
+                Two pieces I return to often — <em>Bho Shambo</em>, an
+                invocation to Shiva, and a <em>padam</em> composed by the
+                poet Kshetrayya. Both live in my solo recitals, danced in
+                full.
+              </p>
+            </Reveal>
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
+              <Reveal>
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <img
+                    src={repertoireStudio}
+                    alt="Mahati Bhikshu in gold and red Kuchipudi costume, kneeling pose, black backdrop with hanging bells and garlands."
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <p className="font-display italic mt-3" style={{ fontSize: "1.1rem" }}>
+                  Bho Shambo
+                </p>
+              </Reveal>
+              <Reveal delay={120}>
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <img
+                    src={repertoireStudio2}
+                    alt="Mahati Bhikshu in gold and red Kuchipudi costume, standing pose, black backdrop with hanging bells and garlands."
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <p className="font-display italic mt-3" style={{ fontSize: "1.1rem" }}>
+                  Kshetrayya Padam
+                </p>
+              </Reveal>
+            </div>
+            <Reveal className="mt-12 flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+              <p
+                className="font-display italic"
+                style={{ color: "var(--color-on-ink-dim)", fontSize: "1.2rem" }}
+              >
+                Full recordings of both pieces exist — link coming soon.
+              </p>
+              <WatchMarker href="#" label="Click to watch" />
+            </Reveal>
+          </div>
+        </div>
+
+        {/* In Performance — 3D interactive gallery */}
         <div
           className="px-6 py-24 md:py-32"
           style={{ background: "var(--color-ink-900)", color: "var(--color-on-ink)" }}
@@ -817,7 +901,7 @@ function Portfolio() {
           <div className="mx-auto max-w-[1200px]">
             <Reveal>
               <span className="eyebrow" style={{ color: "var(--color-gold-400)" }}>
-                Selected Performances
+                In Performance
               </span>
               <h3
                 className="font-display mt-4"
@@ -831,36 +915,29 @@ function Portfolio() {
                 Across India.
               </h3>
               <GoldRule className="mt-8 w-16" />
+              <p className="mt-8 max-w-[62ch]" style={{ color: "var(--color-on-ink-dim)" }}>
+                I've carried these pieces to the Telangana State Sangeet
+                Natak Akademi's Kaleswaram and Dussehra Festivals, to
+                Tirupati Utsavalu, to the Sivaratri Brahmotsavalu at Sri
+                Kalahasti, and into a solo recital for World Bank delegates
+                at the Administrative Staff College of India. Move through
+                the frames below — drag, scroll, or just hover.
+              </p>
             </Reveal>
 
             <Lightbox
               className="mt-12"
               items={[
-                {
-                  src: stage2Full,
-                  title: "TSNA Kaleswaram Festival",
-                  alt: "Solo Kuchipudi performance at the TSNA Kaleswaram Festival.",
-                },
-                {
-                  src: coverHero,
-                  title: "TSNA Dussehra Festival",
-                  alt: "Performance at the TSNA Dussehra Festival.",
-                },
-                {
-                  src: stage2Full,
-                  title: "Tirupati Utsavalu",
-                  alt: "Performance during Tirupati Utsavalu.",
-                },
-                {
-                  src: coverHero,
-                  title: "Sivaratri Brahmotsavalu, Sri Kalahasti",
-                  alt: "Sivaratri Brahmotsavalu at Sri Kalahasti temple.",
-                },
-                {
-                  src: stage2Full,
-                  title: "Solo Recital — World Bank delegates at ASCI",
-                  alt: "Solo recital for World Bank delegates at the Administrative Staff College of India.",
-                },
+                { src: gallery01, title: "Nritta I", alt: "Mahati Bhikshu mid-mudra under purple stage light." },
+                { src: gallery02, title: "Abhinaya", alt: "Mahati Bhikshu in an expressive pose under red stage light." },
+                { src: gallery03, title: "Nritta II", alt: "Mahati Bhikshu in a joyful expression under teal stage light." },
+                { src: gallery04, title: "Tribhangi", alt: "Mahati Bhikshu in a sharp tribhangi stance under red stage light." },
+                { src: gallery05, title: "Movement", alt: "Mahati Bhikshu in dynamic motion under blue stage light." },
+                { src: gallery06, title: "Nritta III", alt: "Mahati Bhikshu in an expressive stance under purple stage light." },
+                { src: gallery07, title: "Solo Recital", alt: "Mahati Bhikshu in an elegant vertical pose under blue stage light." },
+                { src: gallery08, title: "Stillness", alt: "Mahati Bhikshu in a quiet, composed pose against a dark backdrop." },
+                { src: gallery09, title: "Nritta IV", alt: "Mahati Bhikshu in dynamic motion under blue stage light." },
+                { src: gallery10, title: "Closing Pose", alt: "Mahati Bhikshu in a kneeling pose under blue stage light." },
               ]}
             />
 
@@ -871,7 +948,7 @@ function Portfolio() {
               >
                 A moment on film.
               </p>
-              {/* Placeholder anchor — to be wired to her Instagram reel later. */}
+              {/* Placeholder anchor — to be wired to my Instagram reel later. */}
               <WatchMarker href="#" label="Click to watch" />
             </Reveal>
           </div>
@@ -902,8 +979,9 @@ function Portfolio() {
             </h3>
             <GoldRule className="mt-10 w-16" />
             <p className="mt-8" style={{ color: "var(--color-on-parch-dim)", maxWidth: "50ch" }}>
-              Guest performances with <em>Nrityaarchana</em> in Toronto, and a
-              London brand-launch performance for <em>Maaya Entertainment</em>.
+              I've given guest performances with <em>Nrityaarchana</em> in
+              Toronto, and danced at a London brand-launch event for{" "}
+              <em>Maaya Entertainment</em>.
             </p>
           </Reveal>
         </div>
@@ -938,8 +1016,8 @@ function Portfolio() {
           numeral="III"
           title="Beyond Kuchipudi"
           eyebrow="Stage Three"
-          image={contemporaryPortrait}
-          alt="Contemporary portrait of Mahati Bhikshu in a checked handloom sari, hand raised to her face."
+          image={outdoorPortrait}
+          alt="Close portrait of Mahati Bhikshu at golden hour, mudra raised near her face, trees softly lit behind her."
         />
 
         <div className="px-6 py-24 md:py-32">
@@ -956,7 +1034,7 @@ function Portfolio() {
                   fontWeight: 500,
                 }}
               >
-                Vocabularies gathered from other rooms.
+                Vocabularies I've gathered from other rooms.
               </h3>
             </Reveal>
             <Timeline
@@ -998,7 +1076,7 @@ function Portfolio() {
                 lineHeight: 1.1,
               }}
             >
-              “Breath by breath. Step by step.”
+              "Breath by breath. Step by step."
             </blockquote>
           </Reveal>
         </div>
@@ -1026,7 +1104,7 @@ function Portfolio() {
                 className="eyebrow"
                 style={{ color: "var(--color-oxblood-600)" }}
               >
-                Before the Camera Ever Saw Her
+                Before the Camera Ever Saw Me
               </span>
               <p
                 className="font-display mt-6"
@@ -1036,7 +1114,7 @@ function Portfolio() {
                   color: "var(--color-on-ink)",
                 }}
               >
-                Assistant Acting Coach on{" "}
+                I was Assistant Acting Coach on{" "}
                 <em>1: Nenokkadine</em>, then Casting Director for{" "}
                 <em>Aakashavani</em> (SonyLIV) —{" "}
                 <span style={{ color: "var(--color-gold-400)" }}>
@@ -1075,7 +1153,7 @@ function Portfolio() {
             <FilmCarousel
               className="mt-12"
               films={[
-                { title: "SITA", note: "Debut — opposite Sonu Sood" },
+                { title: "SITA", note: "My debut — opposite Sonu Sood" },
                 { title: "RADHE SHYAM", note: "Feature" },
                 { title: "GEORGE REDDY", note: "Feature" },
                 { title: "KINNERASANI", note: "Titular role — most recent" },
@@ -1099,8 +1177,8 @@ function Portfolio() {
         {/* Signature hero moment — full-bleed silence */}
         <div className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
           <img
-            src={stage2Full}
-            alt="Full-length Kuchipudi stance — pink and gold silk, mid-tribhangi, uninterrupted."
+            src={gallery05}
+            alt="Full-length Kuchipudi stance, mid-motion under blue stage light, uninterrupted."
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -1124,8 +1202,8 @@ function Portfolio() {
           numeral="V"
           title="Natyavedam"
           eyebrow="Stage Five · Legacy"
-          image={contemporaryPortrait}
-          alt="Contemporary editorial portrait."
+          image={repertoireStudio2}
+          alt="Mahati Bhikshu in gold and red Kuchipudi costume, standing pose, black backdrop with hanging bells and garlands."
         />
         <div className="px-6 py-24 md:py-32">
           <Reveal className="mx-auto max-w-3xl">
@@ -1140,16 +1218,16 @@ function Portfolio() {
                 fontWeight: 500,
               }}
             >
-              Founder of{" "}
+              I founded{" "}
               <em style={{ color: "var(--color-oxblood-600)" }}>
-                Bhikshu&rsquo;s House of Arts
+                Bhikshu's House of Arts
               </em>{" "}
-              and Director of{" "}
+              and direct{" "}
               <em style={{ color: "var(--color-oxblood-600)" }}>
                 Natyavedam Academy
               </em>{" "}
-              — mentoring the next generation and continuing the preservation of
-              Kuchipudi.
+              — mentoring the next generation and continuing the preservation
+              of Kuchipudi.
             </p>
             <GoldRule className="mt-10 w-16" />
           </Reveal>
@@ -1253,6 +1331,7 @@ function Portfolio() {
     </main>
   );
 }
+
 
 /* ------------------------------ subcomponents ----------------------------- */
 
