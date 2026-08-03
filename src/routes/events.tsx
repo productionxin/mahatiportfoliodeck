@@ -38,7 +38,7 @@ function Events() {
           <Reveal>
             <div className="w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
               <img
-                src={requireAsset("gallery_02.jpg")}
+                src={requireAsset("stage_smoke_wide.jpg")}
                 alt="Mahati Bhikshu in a dark green and magenta silk costume, fist raised and stance wide, lit against billowing red smoke."
                 className="h-full w-full object-cover"
                 style={{ objectPosition: "50% 38%" }}

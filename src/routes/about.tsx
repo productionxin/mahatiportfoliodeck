@@ -47,8 +47,8 @@ function About() {
           <div className="grid gap-12 md:grid-cols-12 md:gap-14">
             <Reveal className="md:col-span-5">
               <Figure
-                src={requireAsset("outdoor_portrait.jpg")}
-                alt="Mahati Bhikshu at golden hour in a magenta blouse and green silk with gold temple jewellery, head lowered, hand resting near her chin."
+                src={requireAsset("field_portrait.jpg")}
+                alt="Close portrait of Mahati Bhikshu outdoors in daylight, in a magenta and green silk costume with gold temple jewellery, head lowered and hand resting near her chin."
                 ratio="4/5"
                 priority
               />

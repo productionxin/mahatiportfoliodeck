@@ -311,6 +311,13 @@ export type Plate = {
   register: Register;
   caption: string;
   alt: string;
+  /**
+   * The frame's true aspect ratio. Stored rather than assumed: the gallery
+   * used to render every plate at 4:5, which re-cropped the 2:3 portraits and
+   * cut heads off. Rendering each plate at its own ratio means the crop that
+   * was made deliberately on export is the crop that ships.
+   */
+  ratio?: string;
 };
 
 export const REGISTER_LABELS: Record<Register | "all", string> = {
@@ -335,14 +342,38 @@ export const PLATES: Plate[] = [
     caption: "After a performance",
     alt: "Prof. Aruna Bhikshu and Mahati Bhikshu standing together outdoors in the evening, her mother's arm linked through hers.",
   },
+
+  /* ------------------------------ portraiture ----------------------------- */
+  {
+    asset: "field_portrait.jpg",
+    register: "portrait",
+    caption: "Daylight",
+    alt: "Close portrait of Mahati Bhikshu outdoors in daylight, in a magenta and green silk costume with gold temple jewellery, head lowered and hand resting near her chin.",
+  },
+  {
+    asset: "field_seated.jpg",
+    register: "portrait",
+    caption: "Seated on grass",
+    alt: "Mahati Bhikshu seated on grass in a green and magenta silk costume, one hand raised beside her head, trees blurred behind her.",
+  },
+  {
+    asset: "contemporary_portrait_tight.jpg",
+    register: "portrait",
+    caption: "Editorial",
+    alt: "Editorial portrait of Mahati Bhikshu in a dark green checked sari with silver tribal jewellery, one hand raised near her face in low warm light.",
+  },
+
+  /* -------------------------------- studio -------------------------------- */
   {
     asset: "cover_hero.jpg",
+    ratio: "0.70",
     register: "studio",
     caption: "Mudra, raised",
     alt: "Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands.",
   },
   {
     asset: "repertoire_studio.jpg",
+    ratio: "3/2",
     register: "studio",
     caption: "Bho Shambo — seated",
     alt: "Mahati Bhikshu seated on a red floor against a black drape in a red and gold silk costume, hands clasped beneath her chin.",
@@ -354,145 +385,166 @@ export const PLATES: Plate[] = [
     alt: "Mahati Bhikshu standing against a black drape in a red and gold silk costume, arms extended in a Kuchipudi stance.",
   },
   {
-    asset: "gallery_02.jpg",
-    register: "stage",
-    caption: "Nritta — red smoke",
-    alt: "Mahati Bhikshu in a dark green and magenta silk costume, fist raised and stance wide, lit against billowing red smoke.",
-  },
-  {
-    asset: "gallery_01.jpg",
-    register: "stage",
-    caption: "Turn, under violet",
-    alt: "Mahati Bhikshu mid-turn under violet stage light and haze, one leg lifted, in a magenta and green silk costume.",
-  },
-  {
-    asset: "gallery_03.jpg",
-    register: "stage",
-    caption: "Abhinaya",
-    alt: "Mahati Bhikshu in an expressive stance under warm stage light, gaze turned to the side.",
-  },
-  {
-    asset: "gallery_04.jpg",
-    register: "stage",
-    caption: "Tribhangi",
-    alt: "Mahati Bhikshu in a sharp tribhangi stance under red stage light.",
-  },
-  {
-    asset: "gallery_05.jpg",
-    register: "stage",
-    caption: "Weight, low",
-    alt: "Mahati Bhikshu under blue stage light in a green and copper silk costume, one arm extended, weight low.",
-  },
-  {
-    asset: "gallery_06.jpg",
-    register: "stage",
-    caption: "Nritta, violet",
-    alt: "Mahati Bhikshu in an expressive stance under violet stage light.",
-  },
-  {
-    asset: "gallery_07.jpg",
-    register: "stage",
-    caption: "Solo recital",
-    alt: "Mahati Bhikshu standing tall under blue stage light in a full Kuchipudi costume.",
-  },
-  {
-    asset: "gallery_08.jpg",
-    register: "stage",
-    caption: "Stillness",
-    alt: "Mahati Bhikshu in a quiet composed pose in a red and gold costume against near-black darkness.",
-  },
-  {
-    asset: "gallery_09.jpg",
-    register: "stage",
-    caption: "In motion",
-    alt: "Mahati Bhikshu in motion under blue stage light, drape lifting with the turn.",
-  },
-  {
-    asset: "gallery_10.jpg",
-    register: "stage",
-    caption: "Closing pose",
-    alt: "Mahati Bhikshu kneeling under blue stage light, one hand raised near her chin.",
-  },
-  {
-    asset: "principal_roles_group_tight.jpg",
-    register: "stage",
-    caption: "Sri Venkateswara Vilasam — Nizamabad, 2019",
-    alt: "Three dancers on a garlanded festival stage — Sri Venkateswara crowned at centre with Padmavathi and Lakshmi to either side, hands raised in abhaya.",
-  },
-  {
-    asset: "outdoor_fullpose.jpg",
-    register: "portrait",
-    caption: "Golden hour — wrists crossed",
-    alt: "Mahati Bhikshu seated on grass at golden hour in a green and magenta silk costume, wrists crossed in a mudra, trees blurred behind her.",
-  },
-  {
-    asset: "outdoor_portrait.jpg",
-    register: "portrait",
-    caption: "Golden hour — lowered gaze",
-    alt: "Mahati Bhikshu at golden hour in a magenta blouse and green silk with gold temple jewellery, head lowered, hand resting near her chin.",
-  },
-  {
-    asset: "contemporary_portrait_tight.jpg",
-    register: "portrait",
-    caption: "Editorial — silver and green",
-    alt: "Editorial portrait of Mahati Bhikshu in a dark green checked sari with silver tribal jewellery, one hand raised near her face in low warm light.",
-  },
-  {
     asset: "hand_detail.jpg",
+    ratio: "1/1",
     register: "studio",
-    caption: "Detail — mudra",
+    caption: "Mudra",
     alt: "A hand held in a Kuchipudi mudra with red-tipped fingers, pearl and gold bracelets at the wrist, red silk sleeve below.",
   },
   {
     asset: "eyes_detail.jpg",
+    ratio: "2/1",
     register: "studio",
-    caption: "Detail — drishti",
+    caption: "Drishti",
     alt: "Close crop of Mahati Bhikshu's eyes in performance make-up — heavy kohl liner and a red bindi.",
   },
   {
     asset: "jewelry_detail.jpg",
+    ratio: "2/1",
     register: "studio",
-    caption: "Detail — temple jewellery",
+    caption: "Temple jewellery",
     alt: "Temple jewellery detail — kemp stones set in gold with pearl drops.",
   },
+
+  /* ----------------------------- in performance --------------------------- */
+  {
+    asset: "stage_symmetry.jpg",
+    register: "stage",
+    caption: "Symmetry",
+    alt: "Mahati Bhikshu standing on a red-lit stage, both hands raised symmetrically beside her head in a mudra.",
+  },
+  {
+    asset: "stage_fist.jpg",
+    register: "stage",
+    caption: "Nritta — red smoke",
+    alt: "Mahati Bhikshu with fist raised and stance wide, lit against billowing orange-red smoke.",
+  },
+  {
+    asset: "stage_green.jpg",
+    register: "stage",
+    caption: "Under green light",
+    alt: "Mahati Bhikshu kneeling under green stage light, hands extended, two warm lamps glowing out of focus behind her.",
+  },
+  {
+    asset: "stage_reaching.jpg",
+    register: "stage",
+    caption: "Reaching",
+    alt: "Mahati Bhikshu seated low under violet light and haze, one arm reaching out with fingers in a mudra.",
+  },
+  {
+    asset: "stage_leap.jpg",
+    register: "stage",
+    caption: "Mid-turn",
+    alt: "Mahati Bhikshu mid-turn under violet stage light, one leg lifted behind her, drape flaring with the movement.",
+  },
+  {
+    asset: "stage_lunge.jpg",
+    register: "stage",
+    caption: "Low lunge",
+    alt: "Mahati Bhikshu in a deep lunge across a teal-lit stage floor, one arm sweeping out behind her.",
+  },
+  {
+    asset: "stage_arms_wide.jpg",
+    register: "stage",
+    caption: "Arms wide",
+    alt: "Mahati Bhikshu in a low stance under blue light, both arms extended wide with palms open.",
+  },
+  {
+    asset: "stage_mauve.jpg",
+    register: "stage",
+    caption: "In haze",
+    alt: "Mahati Bhikshu in profile against pale mauve haze, one hand raised, the stage otherwise dark.",
+  },
+  {
+    asset: "stage_blue.jpg",
+    register: "stage",
+    caption: "Abhinaya",
+    alt: "Mahati Bhikshu under deep blue light, hands held in an expressive gesture near her shoulder.",
+  },
+  {
+    asset: "stage_recline_magenta.jpg",
+    ratio: "3/2",
+    register: "stage",
+    caption: "Floor work — magenta",
+    alt: "Mahati Bhikshu reclining across the stage floor under magenta light, weight on one arm.",
+  },
+  {
+    asset: "stage_recline_blue.jpg",
+    ratio: "3/2",
+    register: "stage",
+    caption: "Floor work — blue",
+    alt: "The same reclining pose lit in deep blue, Mahati Bhikshu's hands drawn in towards her face.",
+  },
+  {
+    asset: "stage_smoke_wide.jpg",
+    ratio: "3/2",
+    register: "stage",
+    caption: "Alone in the smoke",
+    alt: "A wide frame of Mahati Bhikshu small against a full stage of orange smoke.",
+  },
+  {
+    asset: "principal_roles_group_tight.jpg",
+    ratio: "5/6",
+    register: "stage",
+    caption: "Sri Venkateswara Vilasam — Nizamabad, 2019",
+    alt: "Three dancers on a garlanded festival stage — Sri Venkateswara crowned at centre with Padmavathi and Lakshmi to either side, hands raised in abhaya.",
+  },
+
+  /* -------------------------------- archive ------------------------------- */
   {
     asset: "felicitation.jpg",
+    ratio: "0.55",
     register: "archive",
-    caption: "Felicitation — the shawl",
+    caption: "Felicitation",
     alt: "An elder in a red printed shirt draping a pink silk shawl over Mahati Bhikshu's shoulders on stage, her hands folded in gratitude.",
   },
   {
     asset: "award_ceremony.jpg",
+    ratio: "3/2",
     register: "archive",
     caption: "Nrithya Pratibha Puraskar",
-    alt: "Mahati Bhikshu on stage holding a framed citation, flanked by dignitaries and family after receiving the Nrithya Pratibha Puraskar.",
+    alt: "Mahati Bhikshu on stage holding a framed citation, flanked by dignitaries and family.",
+  },
+  {
+    asset: "archive_ceremony.jpg",
+    ratio: "3/2",
+    register: "archive",
+    caption: "On stage with her teachers",
+    alt: "A line of artists and dignitaries standing together on a decorated stage after a performance, a lit lamp at one side.",
   },
   {
     asset: "childhood_archival.jpg",
+    ratio: "16/9",
     register: "archive",
     caption: "Bala Narakasura — age eight",
     alt: "A grainy archival video still: Mahati Bhikshu at age eight in costume on a dark stage, one arm extended in a mudra.",
   },
+
+  /* -------------------------------- cinema -------------------------------- */
   {
     asset: "film_sita.jpg",
+    ratio: "16/9",
     register: "film",
     caption: "Sita",
     alt: "Film still from Sita — an interior scene, a woman in a red and cream sari standing beside a seated man.",
   },
   {
     asset: "film_george_reddy.jpg",
+    ratio: "16/9",
     register: "film",
     caption: "George Reddy",
     alt: "Film still from George Reddy — a student addressing a rally at a microphone before a hand-painted banner.",
   },
   {
     asset: "film_radhe_shyam.jpg",
+    ratio: "16/9",
     register: "film",
     caption: "Radhe Shyam",
     alt: "Film still from Radhe Shyam — a woman in round glasses carrying a first-aid crate aboard a train carriage.",
   },
   {
     asset: "film_kinnerasani.jpg",
+    ratio: "16/9",
     register: "film",
     caption: "Kinnerasani",
     alt: "Film still from Kinnerasani — a woman in an orange sari lying on stone in dappled outdoor light.",

@@ -21,6 +21,13 @@ export const Route = createFileRoute("/gallery")({
 
 const FILTERS: (Register | "all")[] = ["all", "stage", "studio", "portrait", "film", "archive"];
 
+/** Landscape plates take two columns so they are not shrunk beside portraits. */
+function isWide(ratio?: string) {
+  if (!ratio) return false;
+  const [w, h] = ratio.includes("/") ? ratio.split("/").map(Number) : [Number(ratio), 1];
+  return w / h > 1.2;
+}
+
 /**
  * The photographs.
  *
@@ -90,14 +97,17 @@ function Gallery() {
               <Reveal
                 key={p.asset}
                 delay={(i % 3) * 80}
-                className={p.register === "film" ? "sm:col-span-2" : undefined}
+                className={isWide(p.ratio) ? "sm:col-span-2" : undefined}
               >
                 <figure>
                   <button
                     type="button"
                     onClick={() => setOpen(i)}
+                    // Each plate renders at its own stored ratio. Forcing a
+                    // single ratio here re-cropped the portraits and cut heads
+                    // off at the top of the frame.
                     className="group block w-full overflow-hidden"
-                    style={{ aspectRatio: p.register === "film" ? "16/9" : "4/5" }}
+                    style={{ aspectRatio: p.ratio ?? "2/3" }}
                     aria-label={`View: ${p.caption}`}
                   >
                     <img

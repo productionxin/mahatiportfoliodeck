@@ -29,7 +29,7 @@ function Home() {
       to: "/works",
       label: "Works",
       note: "Repertoire, productions, and the festivals the work has been carried to.",
-      asset: "gallery_02.jpg",
+      asset: "stage_fist.jpg",
     },
     {
       to: "/film",
@@ -41,7 +41,7 @@ function Home() {
       to: "/gallery",
       label: "Gallery",
       note: `${PLATES.length} photographs — stage, studio, portrait, cinema, archive.`,
-      asset: "outdoor_portrait.jpg",
+      asset: "field_portrait.jpg",
     },
   ];
 
