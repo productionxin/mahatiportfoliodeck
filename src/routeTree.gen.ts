@@ -9,26 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorksRouteImport } from './routes/works'
+import { Route as TeachingRouteImport } from './routes/teaching'
 import { Route as PressRouteImport } from './routes/press'
-import { Route as PlatesRouteImport } from './routes/plates'
-import { Route as HonoursRouteImport } from './routes/honours'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as FilmRouteImport } from './routes/film'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
 
+const WorksRoute = WorksRouteImport.update({
+  id: '/works',
+  path: '/works',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeachingRoute = TeachingRouteImport.update({
+  id: '/teaching',
+  path: '/teaching',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PressRoute = PressRouteImport.update({
   id: '/press',
   path: '/press',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlatesRoute = PlatesRouteImport.update({
-  id: '/plates',
-  path: '/plates',
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HonoursRoute = HonoursRouteImport.update({
-  id: '/honours',
-  path: '/honours',
+const FilmRoute = FilmRouteImport.update({
+  id: '/film',
+  path: '/film',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -36,74 +48,108 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChaptersSlugRoute = ChaptersSlugRouteImport.update({
-  id: '/chapters/$slug',
-  path: '/chapters/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/honours': typeof HonoursRoute
-  '/plates': typeof PlatesRoute
+  '/film': typeof FilmRoute
+  '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
-  '/chapters/$slug': typeof ChaptersSlugRoute
+  '/teaching': typeof TeachingRoute
+  '/works': typeof WorksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/honours': typeof HonoursRoute
-  '/plates': typeof PlatesRoute
+  '/film': typeof FilmRoute
+  '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
-  '/chapters/$slug': typeof ChaptersSlugRoute
+  '/teaching': typeof TeachingRoute
+  '/works': typeof WorksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
-  '/honours': typeof HonoursRoute
-  '/plates': typeof PlatesRoute
+  '/film': typeof FilmRoute
+  '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
-  '/chapters/$slug': typeof ChaptersSlugRoute
+  '/teaching': typeof TeachingRoute
+  '/works': typeof WorksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/contact'
-    | '/honours'
-    | '/plates'
+    | '/film'
+    | '/gallery'
     | '/press'
-    | '/chapters/$slug'
+    | '/teaching'
+    | '/works'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/honours' | '/plates' | '/press' | '/chapters/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/film'
+    | '/gallery'
+    | '/press'
+    | '/teaching'
+    | '/works'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/contact'
-    | '/honours'
-    | '/plates'
+    | '/film'
+    | '/gallery'
     | '/press'
-    | '/chapters/$slug'
+    | '/teaching'
+    | '/works'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
-  HonoursRoute: typeof HonoursRoute
-  PlatesRoute: typeof PlatesRoute
+  FilmRoute: typeof FilmRoute
+  GalleryRoute: typeof GalleryRoute
   PressRoute: typeof PressRoute
-  ChaptersSlugRoute: typeof ChaptersSlugRoute
+  TeachingRoute: typeof TeachingRoute
+  WorksRoute: typeof WorksRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/works': {
+      id: '/works'
+      path: '/works'
+      fullPath: '/works'
+      preLoaderRoute: typeof WorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teaching': {
+      id: '/teaching'
+      path: '/teaching'
+      fullPath: '/teaching'
+      preLoaderRoute: typeof TeachingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/press': {
       id: '/press'
       path: '/press'
@@ -111,18 +157,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PressRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plates': {
-      id: '/plates'
-      path: '/plates'
-      fullPath: '/plates'
-      preLoaderRoute: typeof PlatesRouteImport
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/honours': {
-      id: '/honours'
-      path: '/honours'
-      fullPath: '/honours'
-      preLoaderRoute: typeof HonoursRouteImport
+    '/film': {
+      id: '/film'
+      path: '/film'
+      fullPath: '/film'
+      preLoaderRoute: typeof FilmRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -132,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -139,23 +192,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chapters/$slug': {
-      id: '/chapters/$slug'
-      path: '/chapters/$slug'
-      fullPath: '/chapters/$slug'
-      preLoaderRoute: typeof ChaptersSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
-  HonoursRoute: HonoursRoute,
-  PlatesRoute: PlatesRoute,
+  FilmRoute: FilmRoute,
+  GalleryRoute: GalleryRoute,
   PressRoute: PressRoute,
-  ChaptersSlugRoute: ChaptersSlugRoute,
+  TeachingRoute: TeachingRoute,
+  WorksRoute: WorksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

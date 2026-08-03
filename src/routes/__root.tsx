@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Spine } from "../book/Layout";
+import { Footer, Header } from "../site/Header";
 
 function NotFoundComponent() {
   return (
@@ -123,8 +123,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         crossOrigin: "anonymous",
       } as unknown as { rel: string; href: string },
       {
+        // Fraunces for display (high contrast, soft wedge serifs) and Jost for
+        // body at light weights — the pairing the design is set in.
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Jost:ital,wght@0,300..600;1,300..500&display=swap",
       },
     ],
   }),
@@ -153,10 +155,10 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* The volume's binding — persistent on every leaf except the cover. */}
-      <Spine />
+      <Header />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <Footer />
     </QueryClientProvider>
   );
 }

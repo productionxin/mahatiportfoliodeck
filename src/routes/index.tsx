@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { ARTIST, BACK_MATTER, CHAPTERS } from "@/content";
-import { Display, Eyebrow, Rule } from "@/book/primitives";
+import { ARTIST, FILMS, PLATES } from "@/content";
+import { Body, Heading, Label, Reveal, Section } from "@/site/ui";
+import { requireAsset } from "@/site/assets";
 import coverHero from "@/assets/cover_hero.jpg";
 
 export const Route = createFileRoute("/")({
-  component: Cover,
+  component: Home,
   head: () => ({
     meta: [
       { property: "og:image", content: coverHero },
@@ -15,223 +16,137 @@ export const Route = createFileRoute("/")({
 });
 
 /**
- * The cover and the contents page — the volume's front matter.
- *
- * Deliberately not a scrolling summary of everything: a cover's job is to
- * name the work and open, so the whole first screen is the photograph and the
- * title, and the contents follow as their own leaf.
+ * The home page: one full-bleed photograph with the name set over it, then a
+ * short statement and three ways in. It is deliberately brief — the sections
+ * hold the substance, and a visitor arriving from a search or a signature link
+ * should be able to choose in one screen.
  */
-function Cover() {
+function Home() {
+  const featured = [
+    {
+      to: "/works",
+      label: "Works",
+      note: "Repertoire, productions, and the festivals the work has been carried to.",
+      asset: "gallery_02.jpg",
+    },
+    {
+      to: "/film",
+      label: "Film",
+      note: `${FILMS.length} features, and the coaching practice behind the camera.`,
+      asset: "contemporary_portrait_tight.jpg",
+    },
+    {
+      to: "/gallery",
+      label: "Gallery",
+      note: `${PLATES.length} photographs — stage, studio, portrait, cinema, archive.`,
+      asset: "outdoor_portrait.jpg",
+    },
+  ];
+
   return (
-    <main style={{ background: "var(--color-ink-900)", color: "var(--color-on-ink)" }}>
-      {/* -------------------------------- cover ------------------------------- */}
-      <section className="relative flex h-[100svh] min-h-[620px] w-full flex-col overflow-hidden">
+    <main>
+      {/* --------------------------------- hero -------------------------------- */}
+      <section className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
         <img
           src={coverHero}
           alt="Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands."
           className="absolute inset-0 h-full w-full object-cover"
-          // A portrait plate in a landscape frame fills the width, so only the
-          // vertical component does anything here — it holds her face high.
-          style={{ objectPosition: "50% 26%" }}
+          // Sits her face above centre so the title crosses the silk rather
+          // than her eyes.
+          style={{ objectPosition: "50% 40%" }}
         />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(21,19,15,0.72) 0%, rgba(21,19,15,0.12) 32%, rgba(21,19,15,0.15) 52%, rgba(21,19,15,0.9) 100%)",
-          }}
-        />
-        {/* A scrim down the binding edge. The title sits over her raised arm,
-            and without this the lettering loses its counters against the silk. */}
+        {/* Just enough veil to hold the lettering; the photograph stays the subject. */}
         <div
           aria-hidden
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(21,19,15,0.86) 0%, rgba(21,19,15,0.55) 28%, rgba(21,19,15,0) 58%)",
+              "linear-gradient(180deg, rgba(20,16,14,0.5) 0%, rgba(20,16,14,0.08) 30%, rgba(20,16,14,0.1) 60%, rgba(20,16,14,0.62) 100%)",
           }}
         />
 
-        {/* A ruled border, held inside the trim — the frame of a bound cover. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-4 md:inset-8"
-          style={{ border: "1px solid rgba(184,138,62,0.55)" }}
-        />
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <h1
+            className="font-display text-center"
+            style={{
+              color: "var(--color-on-dark)",
+              fontSize: "clamp(2.6rem, 8.5vw, 7.5rem)",
+              lineHeight: 1,
+              // Slightly translucent so the photograph reads through the
+              // lettering, as it does on the reference.
+              opacity: 0.88,
+              textShadow: "0 2px 40px rgba(20,16,14,0.45)",
+            }}
+          >
+            {ARTIST.name}
+          </h1>
+        </div>
 
-        <div className="relative flex h-full flex-col justify-between p-8 md:p-16">
-          <div className="flex items-start justify-between gap-6">
-            <Eyebrow tone="gold">{ARTIST.studio}</Eyebrow>
-            <Eyebrow tone="gold">Portfolio · Vol. I</Eyebrow>
-          </div>
-
-          <div className="max-w-[22ch]">
-            <Display
-              as="h1"
-              size="clamp(3rem, 10vw, 8rem)"
-              color="var(--color-on-ink)"
-              className="leading-[0.92]"
-            >
-              Mahati
-              <br />
-              <span style={{ fontStyle: "italic", color: "var(--color-gold-400)" }}>Bhikshu</span>
-            </Display>
-            <Rule className="mt-8 w-24" />
-            <p className="eyebrow mt-5" style={{ color: "var(--color-on-ink)" }}>
+        <div className="absolute inset-x-0 bottom-0 px-6 pb-8 md:px-10 md:pb-10">
+          <div className="mx-auto flex max-w-[1400px] flex-wrap items-end justify-between gap-4">
+            <span className="eyebrow" style={{ color: "var(--color-on-dark)" }}>
               {ARTIST.roles}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <p
-              className="font-display italic"
-              style={{
-                color: "var(--color-on-ink)",
-                fontSize: "clamp(1.1rem, 2.4vw, 1.6rem)",
-                maxWidth: "24ch",
-              }}
+            </span>
+            <span
+              className="text-right text-xs leading-relaxed"
+              style={{ color: "var(--color-on-dark-dim)" }}
             >
-              “{ARTIST.thesis}”
-            </p>
-            <a
-              href="#contents"
-              className="group inline-flex items-center gap-3"
-              aria-label="Open the contents"
-            >
-              <Eyebrow tone="gold">Open the book</Eyebrow>
-              <span
-                aria-hidden
-                className="grid h-11 w-11 place-items-center rounded-full border transition-transform duration-500 group-hover:translate-y-1"
-                style={{ borderColor: "var(--color-gold-500)" }}
-              >
-                <span
-                  className="block"
-                  style={{
-                    width: 0,
-                    height: 0,
-                    borderTop: "9px solid var(--color-gold-400)",
-                    borderLeft: "6px solid transparent",
-                    borderRight: "6px solid transparent",
-                    marginTop: 2,
-                  }}
-                />
-              </span>
-            </a>
+              Photography — {ARTIST.photographyCredit}
+              <br />© {ARTIST.instagram} | All rights reserved
+            </span>
           </div>
         </div>
       </section>
 
-      {/* ------------------------------- contents ----------------------------- */}
-      <section
-        id="contents"
-        className="scroll-mt-0 px-6 py-20 md:px-16 md:py-28 lg:pl-[100px]"
-        style={{ background: "var(--color-parchment-100)", color: "var(--color-on-parch)" }}
-      >
-        <div className="mx-auto max-w-[1100px]">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <Eyebrow>The Volume</Eyebrow>
-              <Display as="h2" size="clamp(2.4rem, 6vw, 4rem)" className="mt-4">
-                Contents
-              </Display>
-            </div>
-            <p style={{ color: "var(--color-on-parch-dim)", maxWidth: "38ch" }}>
-              Six chapters, then the plates, the honours, the press, and the correspondence. Each
-              stands on its own page.
-            </p>
-          </div>
+      {/* ------------------------------- statement ----------------------------- */}
+      <Section className="py-24 md:py-36" width="text">
+        <Reveal className="text-center">
+          <Label>{ARTIST.thesis}</Label>
+          <Heading as="h2" size="clamp(1.7rem, 3.6vw, 2.7rem)" className="mt-8">
+            A Kuchipudi artist of more than twenty years, an actor across five features, and the
+            teacher a new generation trains with.
+          </Heading>
+          <Body dim className="mx-auto mt-8" measure="62ch">
+            Daughter of a theatre actor and a Kuchipudi exponent, Mahati Bhikshu grew up inside the
+            form — then carried it across India, to London, Toronto and Dubai, and into film.
+          </Body>
+          <Link
+            to="/about"
+            className="mt-10 inline-block border-b pb-1 transition-opacity hover:opacity-60"
+            style={{ borderColor: "var(--color-accent)" }}
+          >
+            <span className="eyebrow" style={{ color: "var(--color-accent)" }}>
+              Read the full biography
+            </span>
+          </Link>
+        </Reveal>
+      </Section>
 
-          <Rule className="mt-12" />
-
-          <ol className="mt-2">
-            {CHAPTERS.map((c) => (
-              <li key={c.slug} className="border-b" style={{ borderColor: "rgba(184,138,62,0.3)" }}>
-                <Link
-                  to="/chapters/$slug"
-                  params={{ slug: c.slug }}
-                  className="group grid gap-3 py-7 transition-opacity hover:opacity-65 md:grid-cols-[3rem_1fr_auto] md:items-baseline md:gap-6"
-                >
-                  <span
-                    className="font-display italic"
-                    style={{ color: "var(--color-gold-500)", fontSize: "1.1rem" }}
-                  >
-                    {c.numeral}
-                  </span>
-                  <span className="min-w-0">
-                    <Display as="h3" size="clamp(1.7rem, 4.2vw, 2.9rem)">
-                      {c.title}
-                    </Display>
-                    <span
-                      className="mt-2 block font-display italic"
-                      style={{ color: "var(--color-on-parch-dim)", fontSize: "1.05rem" }}
-                    >
-                      {c.subtitle}
-                    </span>
-                  </span>
-                  <span
-                    className="font-display italic"
-                    style={{ color: "var(--color-on-parch-dim)", fontSize: "1rem" }}
-                  >
-                    {c.folio}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-16">
-            <Eyebrow tone="oxblood">Back Matter</Eyebrow>
-            <ol className="mt-4">
-              {BACK_MATTER.map((b) => (
-                <li key={b.to} className="border-b" style={{ borderColor: "rgba(184,138,62,0.3)" }}>
-                  <Link
-                    to={b.to}
-                    className="group grid gap-3 py-6 transition-opacity hover:opacity-65 md:grid-cols-[3rem_1fr_auto] md:items-baseline md:gap-6"
-                  >
-                    <span aria-hidden />
-                    <span className="min-w-0">
-                      <Display as="h3" size="clamp(1.4rem, 3vw, 2rem)">
-                        {b.label}
-                      </Display>
-                      <span className="mt-1 block" style={{ color: "var(--color-on-parch-dim)" }}>
-                        {b.description}
-                      </span>
-                    </span>
-                    <span
-                      className="font-display italic"
-                      style={{ color: "var(--color-on-parch-dim)", fontSize: "1rem" }}
-                    >
-                      {b.folio}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="mt-20 flex flex-wrap items-center justify-between gap-6">
-            <Link
-              to="/chapters/$slug"
-              params={{ slug: CHAPTERS[0].slug }}
-              className="border px-7 py-4 transition-colors"
-              style={{
-                borderColor: "var(--color-oxblood-600)",
-                background: "var(--color-oxblood-600)",
-                color: "var(--color-on-ink)",
-              }}
-            >
-              <Eyebrow tone="gold">Begin at Chapter I</Eyebrow>
-            </Link>
-            <a
-              href={`mailto:${ARTIST.email}`}
-              className="font-display text-xl italic transition-opacity hover:opacity-70"
-              style={{ color: "var(--color-oxblood-600)" }}
-            >
-              {ARTIST.email}
-            </a>
-          </div>
+      {/* -------------------------------- ways in ------------------------------ */}
+      <Section className="pb-24 md:pb-36">
+        <div className="grid gap-x-8 gap-y-12 md:grid-cols-3">
+          {featured.map((f, i) => (
+            <Reveal key={f.to} delay={i * 110}>
+              <Link to={f.to} className="group block">
+                <div className="relative w-full overflow-hidden" style={{ aspectRatio: "4/5" }}>
+                  <img
+                    src={requireAsset(f.asset)}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                  />
+                </div>
+                <Heading as="h3" size="clamp(1.5rem, 2.6vw, 2rem)" className="mt-5">
+                  {f.label}
+                </Heading>
+                <Body dim className="mt-2" measure="34ch">
+                  {f.note}
+                </Body>
+              </Link>
+            </Reveal>
+          ))}
         </div>
-      </section>
+      </Section>
     </main>
   );
 }
