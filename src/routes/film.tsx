@@ -81,7 +81,7 @@ function Film() {
                     ) : (
                       <span
                         className="absolute inset-0 grid place-items-center font-display italic"
-                        style={{ color: "var(--color-text-faint)" }}
+                        style={{ color: "var(--color-text-dim)" }}
                       >
                         Still to come
                       </span>

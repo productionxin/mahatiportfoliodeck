@@ -143,7 +143,7 @@ function Teaching() {
               <a
                 href={`mailto:${ARTIST.workEmail}`}
                 className="underline underline-offset-4 hover:opacity-60"
-                style={{ color: "var(--color-accent)" }}
+                style={{ color: "var(--color-rust)" }}
               >
                 {ARTIST.workEmail}
               </a>

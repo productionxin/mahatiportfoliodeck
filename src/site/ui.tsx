@@ -62,7 +62,7 @@ export function Label({
   className?: string;
 }) {
   const color = {
-    accent: "var(--color-accent)",
+    accent: "var(--color-rust)",
     dim: "var(--color-text-dim)",
     light: "var(--color-on-dark-dim)",
   }[tone];
@@ -292,10 +292,10 @@ export function ArrowLink({
       rel={external ? "noreferrer noopener" : undefined}
       className="group inline-flex items-baseline gap-2 transition-opacity hover:opacity-60"
     >
-      <span className="eyebrow" style={{ color: "var(--color-accent)" }}>
+      <span className="eyebrow" style={{ color: "var(--color-rust)" }}>
         {children}
       </span>
-      <span aria-hidden style={{ color: "var(--color-accent)" }}>
+      <span aria-hidden style={{ color: "var(--color-rust)" }}>
         →
       </span>
     </a>

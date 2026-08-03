@@ -13,6 +13,7 @@ export const NAV: NavItem[] = [
   { to: "/film", label: "Film" },
   { to: "/teaching", label: "Teaching" },
   { to: "/gallery", label: "Gallery" },
+  { to: "/events", label: "Events" },
   { to: "/press", label: "Press" },
   { to: "/contact", label: "Contact" },
 ];

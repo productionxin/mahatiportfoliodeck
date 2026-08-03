@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 
 import { ARTIST, PLATES, REGISTER_LABELS, type Register } from "@/content";
 import { Body, Label, PageTitle, PageTop, Reveal, Section, useLightbox } from "@/site/ui";
+import { useSwipe } from "@/site/motion";
 import { requireAsset } from "@/site/assets";
 
 export const Route = createFileRoute("/gallery")({
@@ -35,6 +36,12 @@ function Gallery() {
     [filter],
   );
   const { open, setOpen } = useLightbox(shown.length);
+  const step = (d: number) =>
+    setOpen((o) => (o === null ? 0 : (o + d + shown.length) % shown.length));
+  const swipe = useSwipe(
+    () => step(1),
+    () => step(-1),
+  );
 
   return (
     <main>
@@ -65,12 +72,12 @@ function Gallery() {
                   aria-pressed={on}
                   className="navlink pb-1 transition-opacity hover:opacity-60"
                   style={{
-                    color: on ? "var(--color-accent)" : "var(--color-text)",
-                    borderBottom: `1px solid ${on ? "var(--color-accent)" : "transparent"}`,
+                    color: on ? "var(--color-rust)" : "var(--color-text)",
+                    borderBottom: `1px solid ${on ? "var(--color-rust)" : "transparent"}`,
                   }}
                 >
                   {REGISTER_LABELS[f]}{" "}
-                  <span style={{ color: "var(--color-text-faint)", fontSize: 13 }}>{count}</span>
+                  <span style={{ color: "var(--color-text-dim)", fontSize: 13 }}>{count}</span>
                 </button>
               );
             })}
@@ -113,8 +120,7 @@ function Gallery() {
 
           <Reveal className="mt-16 text-center">
             <Body dim className="mx-auto" measure="52ch">
-              Performance photography — {ARTIST.photographyCredit}. Archival images are frames from
-              video and are reproduced as found.
+              Archival images are frames from video and are reproduced as found.
             </Body>
           </Reveal>
         </Section>
@@ -128,6 +134,7 @@ function Gallery() {
           className="fixed inset-0 z-[90] flex items-center justify-center p-4"
           style={{ background: "rgba(20,16,14,0.95)" }}
           onClick={() => setOpen(null)}
+          {...swipe}
         >
           <button
             type="button"

@@ -25,9 +25,66 @@ export const ARTIST = {
   instagramUrl: "https://www.instagram.com/mahatibhikshu/",
   imdbUrl: "https://www.imdb.com/name/nm5825092/",
   imdbId: "nm5825092",
-  photographyCredit: "Beyond Portrait Studio",
   studio: "Production X",
 } as const;
+
+/* -------------------------------- events --------------------------------- */
+
+/**
+ * Performances and events.
+ *
+ * Only engagements that are documented get listed — the past entries below
+ * come from the press archive and the event poster. Add upcoming dates here
+ * and they surface automatically at the top of /events and on the home page;
+ * when there are none, the page says so rather than showing a stale list.
+ */
+export type EventItem = {
+  title: string;
+  date: string;
+  /** ISO date, used only for sorting and for the upcoming/past split. */
+  iso: string;
+  time?: string;
+  venue: string;
+  city: string;
+  note?: string;
+  url?: string;
+};
+
+export const EVENTS: EventItem[] = [
+  {
+    title: "Nritya Deva Archana — Edition 2",
+    date: "4 July 2026",
+    iso: "2026-07-04",
+    time: "5:30 PM",
+    venue: "Shree Narayani Natyalaya",
+    city: "Serilingampally, Hyderabad",
+    note: "A Kuchipudi recital at the trust's second annual celebration, shared with Odissi dancer Sabarnik De.",
+  },
+  {
+    title: "Mrigthrusna — Prajwala Conference",
+    date: "2026",
+    iso: "2026-01-01",
+    venue: "Anti-Human Trafficking Conference",
+    city: "Hyderabad",
+    note: "A cultural presentation on trafficking and the resilience of survivors, staged for 500 delegates before judges of the Supreme Court and the Telangana High Court.",
+  },
+  {
+    title: "Sri Venkateswara Vilasam",
+    date: "2019",
+    iso: "2019-01-01",
+    venue: "Gudi Sambaralu",
+    city: "Nizamabad",
+    note: "Principal roles — Sri Padmavathi Devi, Goddess Lakshmi Devi and Sri Venkateswara Swamy.",
+  },
+];
+
+/** Splits the diary against a reference date, newest first within each half. */
+export function splitEvents(events: EventItem[], now = new Date()) {
+  const today = now.toISOString().slice(0, 10);
+  const upcoming = events.filter((e) => e.iso >= today).sort((a, b) => a.iso.localeCompare(b.iso));
+  const past = events.filter((e) => e.iso < today).sort((a, b) => b.iso.localeCompare(a.iso));
+  return { upcoming, past };
+}
 
 /* ----------------------------- credentials ------------------------------- */
 
@@ -266,6 +323,18 @@ export const REGISTER_LABELS: Record<Register | "all", string> = {
 };
 
 export const PLATES: Plate[] = [
+  {
+    asset: "guru_mother_01.jpg",
+    register: "archive",
+    caption: "With her guru — Prof. Aruna Bhikshu",
+    alt: "Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance.",
+  },
+  {
+    asset: "guru_mother_02.jpg",
+    register: "archive",
+    caption: "After a performance",
+    alt: "Prof. Aruna Bhikshu and Mahati Bhikshu standing together outdoors in the evening, her mother's arm linked through hers.",
+  },
   {
     asset: "cover_hero.jpg",
     register: "studio",

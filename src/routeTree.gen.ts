@@ -14,6 +14,7 @@ import { Route as TeachingRouteImport } from './routes/teaching'
 import { Route as PressRouteImport } from './routes/press'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as FilmRouteImport } from './routes/film'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -43,6 +44,11 @@ const FilmRoute = FilmRouteImport.update({
   path: '/film',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
   '/film': typeof FilmRoute
   '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
   '/film': typeof FilmRoute
   '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/events': typeof EventsRoute
   '/film': typeof FilmRoute
   '/gallery': typeof GalleryRoute
   '/press': typeof PressRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/events'
     | '/film'
     | '/gallery'
     | '/press'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/events'
     | '/film'
     | '/gallery'
     | '/press'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/events'
     | '/film'
     | '/gallery'
     | '/press'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  EventsRoute: typeof EventsRoute
   FilmRoute: typeof FilmRoute
   GalleryRoute: typeof GalleryRoute
   PressRoute: typeof PressRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FilmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  EventsRoute: EventsRoute,
   FilmRoute: FilmRoute,
   GalleryRoute: GalleryRoute,
   PressRoute: PressRoute,

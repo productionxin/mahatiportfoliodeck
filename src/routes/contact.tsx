@@ -79,8 +79,8 @@ function Contact() {
                   aria-pressed={on}
                   className="navlink pb-1 transition-opacity hover:opacity-60"
                   style={{
-                    color: on ? "var(--color-accent)" : "var(--color-text)",
-                    borderBottom: `1px solid ${on ? "var(--color-accent)" : "transparent"}`,
+                    color: on ? "var(--color-rust)" : "var(--color-text)",
+                    borderBottom: `1px solid ${on ? "var(--color-rust)" : "transparent"}`,
                   }}
                 >
                   {FACT_SHEETS[k].label}
@@ -114,9 +114,9 @@ function Contact() {
             <a
               href={`mailto:${active === "casting" ? ARTIST.email : ARTIST.workEmail}`}
               className="mt-10 inline-block border-b pb-1 transition-opacity hover:opacity-60"
-              style={{ borderColor: "var(--color-accent)" }}
+              style={{ borderColor: "var(--color-rust)" }}
             >
-              <span className="eyebrow" style={{ color: "var(--color-accent)" }}>
+              <span className="eyebrow" style={{ color: "var(--color-rust)" }}>
                 {active === "casting" ? "Enquire about casting" : "Enquire about booking"}
               </span>
             </a>
@@ -128,9 +128,8 @@ function Contact() {
           <Reveal className="text-center">
             <Label tone="dim">Credits</Label>
             <Body dim className="mx-auto mt-6" measure="54ch">
-              Set in Fraunces and Jost. Performance photography by {ARTIST.photographyCredit}.
-              Archival images are frames from video and are reproduced as found. Produced by{" "}
-              {ARTIST.studio}.
+              Set in Fraunces and Jost. Archival images are frames from video and are reproduced as
+              found. Produced by {ARTIST.studio}.
             </Body>
           </Reveal>
         </Section>

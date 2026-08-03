@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Footer, Header } from "../site/Header";
+import { RouteTransition, ScrollProgress } from "../site/motion";
 
 function NotFoundComponent() {
   return (
@@ -155,9 +156,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollProgress />
       <Header />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <RouteTransition>
+        <Outlet />
+      </RouteTransition>
       <Footer />
     </QueryClientProvider>
   );

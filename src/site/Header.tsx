@@ -9,17 +9,7 @@ import { useEffect, useState } from "react";
 
 import { ARTIST } from "@/content";
 import { NAV } from "./nav";
-
-function useScrolled(threshold = 24) {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > threshold);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [threshold]);
-  return scrolled;
-}
+import { useScrolled } from "./motion";
 
 export function Header() {
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -116,7 +106,7 @@ export function Header() {
               {ARTIST.name}
             </span>
             <button type="button" onClick={() => setOpen(false)} aria-label="Close menu">
-              <span className="eyebrow" style={{ color: "var(--color-accent)" }}>
+              <span className="eyebrow" style={{ color: "var(--color-rust)" }}>
                 Close
               </span>
             </button>
@@ -131,7 +121,7 @@ export function Header() {
                     className="block py-5 font-display"
                     style={{
                       fontSize: "clamp(1.8rem, 7vw, 2.6rem)",
-                      color: path === item.to ? "var(--color-accent)" : "var(--color-text)",
+                      color: path === item.to ? "var(--color-rust)" : "var(--color-text)",
                     }}
                   >
                     {item.label}
@@ -145,7 +135,7 @@ export function Header() {
             <a
               href={`mailto:${ARTIST.email}`}
               className="mt-8 inline-block font-display italic"
-              style={{ fontSize: "1.15rem", color: "var(--color-accent)" }}
+              style={{ fontSize: "1.15rem", color: "var(--color-rust)" }}
             >
               {ARTIST.email}
             </a>
@@ -252,9 +242,7 @@ export function Footer() {
           className="mt-14 flex flex-col gap-2 pt-6 text-sm md:flex-row md:items-center md:justify-between"
           style={{ borderTop: "1px solid var(--color-hairline)", color: "var(--color-text-dim)" }}
         >
-          <span>
-            Photography — {ARTIST.photographyCredit} · {ARTIST.studio}
-          </span>
+          <span>{ARTIST.studio}</span>
           <span>
             © {new Date().getFullYear()} {ARTIST.name}. All rights reserved.
           </span>

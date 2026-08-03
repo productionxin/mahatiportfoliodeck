@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { ARTIST, FILMS, PLATES } from "@/content";
 import { Body, Heading, Label, Reveal, Section } from "@/site/ui";
+import { useParallax } from "@/site/motion";
 import { requireAsset } from "@/site/assets";
 import coverHero from "@/assets/cover_hero.jpg";
 
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/")({
  * should be able to choose in one screen.
  */
 function Home() {
+  const heroRef = useParallax<HTMLImageElement>(0.14);
   const featured = [
     {
       to: "/works",
@@ -48,9 +50,10 @@ function Home() {
       {/* --------------------------------- hero -------------------------------- */}
       <section className="relative h-[100svh] min-h-[600px] w-full overflow-hidden">
         <img
+          ref={heroRef}
           src={coverHero}
           alt="Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands."
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover will-change-transform"
           // Sits her face above centre so the title crosses the silk rather
           // than her eyes.
           style={{ objectPosition: "50% 40%" }}
@@ -87,14 +90,24 @@ function Home() {
             <span className="eyebrow" style={{ color: "var(--color-on-dark)" }}>
               {ARTIST.roles}
             </span>
-            <span
-              className="text-right text-xs leading-relaxed"
-              style={{ color: "var(--color-on-dark-dim)" }}
-            >
-              Photography — {ARTIST.photographyCredit}
-              <br />© {ARTIST.instagram} | All rights reserved
+            <span className="text-right text-xs" style={{ color: "var(--color-on-dark-dim)" }}>
+              © {ARTIST.instagram} | All rights reserved
             </span>
           </div>
+        </div>
+
+        {/* Scroll cue — a slow travelling hairline rather than a bouncing
+            chevron, which would fight the stillness of the photograph. */}
+        <div aria-hidden className="absolute inset-x-0 bottom-24 hidden justify-center md:flex">
+          <span
+            className="block overflow-hidden"
+            style={{ width: 1, height: 54, background: "rgba(246,239,233,0.25)" }}
+          >
+            <span
+              className="scroll-cue block"
+              style={{ width: 1, height: 54, background: "var(--color-on-dark)" }}
+            />
+          </span>
         </div>
       </section>
 
@@ -113,9 +126,9 @@ function Home() {
           <Link
             to="/about"
             className="mt-10 inline-block border-b pb-1 transition-opacity hover:opacity-60"
-            style={{ borderColor: "var(--color-accent)" }}
+            style={{ borderColor: "var(--color-rust)" }}
           >
-            <span className="eyebrow" style={{ color: "var(--color-accent)" }}>
+            <span className="eyebrow" style={{ color: "var(--color-rust)" }}>
               Read the full biography
             </span>
           </Link>

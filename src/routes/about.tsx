@@ -72,6 +72,28 @@ function About() {
                   <em>Parikatha</em>, where <em>vachika abhinaya</em> — the voice as gesture — was
                   introduced to her.
                 </Body>
+
+                {/* The guru passage is the emotional centre of the biography, so
+                    it is illustrated where it is told rather than left to the
+                    gallery to carry. */}
+                <figure className="mt-10" style={{ maxWidth: 430 }}>
+                  <div className="w-full overflow-hidden" style={{ aspectRatio: "4/5" }}>
+                    <img
+                      src={requireAsset("guru_mother_01.jpg")}
+                      alt="Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance."
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                      style={{ objectPosition: "50% 26%" }}
+                    />
+                  </div>
+                  <figcaption className="mt-3">
+                    <Label>Her guru</Label>
+                    <p className="mt-2" style={{ color: "var(--color-text-dim)" }}>
+                      With Prof. Aruna Bhikshu — her mother, and her teacher for more than twenty
+                      years.
+                    </p>
+                  </figcaption>
+                </figure>
                 <Body className="mt-6">
                   She has performed extensively across India and abroad, presenting solo recitals
                   and taking principal roles in acclaimed dance productions, with international
