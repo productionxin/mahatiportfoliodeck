@@ -257,6 +257,25 @@
   text-transform: uppercase;
 }
 
+/* Gallery column flow. The plate library mixes 2:3, 3:2, 16:9, 2:1 and 1:1
+   frames; a rigid grid left holes wherever a landscape frame spanned two
+   cells. Columns let each frame keep its true crop and close the gaps. */
+@utility gallery-columns {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .gallery-columns {
+    column-count: 2;
+  }
+}
+@media (min-width: 1024px) {
+  .gallery-columns {
+    column-count: 3;
+    column-gap: 2rem;
+  }
+}
+
 /* Guarantees the 44px minimum touch target without changing how the
    lettering looks — the hit area grows, the type does not. */
 @utility tap {
