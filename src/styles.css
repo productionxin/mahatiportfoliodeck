@@ -13,18 +13,22 @@
   --font-display: "Playfair Display", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  --color-ink-900: #15130F;
-  --color-ink-800: #211D17;
-  --color-parchment-100: #F3ECDC;
-  --color-parchment-200: #E9DFC9;
-  --color-gold-500: #B88A3E;
-  --color-gold-400: #D1A75A;
-  --color-oxblood-600: #7A2331;
-  --color-emerald-600: #3B6653;
-  --color-on-ink: #E9E2CF;
-  --color-on-ink-dim: #B8AE95;
-  --color-on-parch: #221E17;
-  --color-on-parch-dim: #5B5140;
+  --color-ink-900: #15130f;
+  --color-ink-800: #211d17;
+  --color-parchment-100: #f3ecdc;
+  --color-parchment-200: #e9dfc9;
+  --color-gold-500: #b88a3e;
+  --color-gold-400: #d1a75a;
+  --color-oxblood-600: #7a2331;
+  /* Oxblood marks the cinema register. The 600 is only legible on parchment
+     (7.5:1); on the ink grounds it drops to 1.7:1, so dark sections use this
+     lighter tint instead — 5.1:1 on ink-800 — and keep the colour coding. */
+  --color-oxblood-400: #c9776a;
+  --color-emerald-600: #3b6653;
+  --color-on-ink: #e9e2cf;
+  --color-on-ink-dim: #b8ae95;
+  --color-on-parch: #221e17;
+  --color-on-parch-dim: #5b5140;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -70,8 +74,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #F3ECDC;
-  --foreground: #221E17;
+  --background: #f3ecdc;
+  --foreground: #221e17;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
@@ -181,8 +185,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Custom cursor: hide the native cursor only where our cursor takes over,
