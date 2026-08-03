@@ -64,7 +64,7 @@ function Home() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(20,16,14,0.5) 0%, rgba(20,16,14,0.08) 30%, rgba(20,16,14,0.1) 60%, rgba(20,16,14,0.62) 100%)",
+              "linear-gradient(180deg, var(--scrim-hero-top) 0%, var(--scrim-hero-mid) 30%, var(--scrim-hero-low) 60%, var(--scrim-hero-foot) 100%)",
           }}
         />
 
@@ -73,12 +73,12 @@ function Home() {
             className="font-display text-center"
             style={{
               color: "var(--color-on-dark)",
-              fontSize: "clamp(2.6rem, 8.5vw, 7.5rem)",
+              fontSize: "var(--text-hero)",
               lineHeight: 1,
               // Slightly translucent so the photograph reads through the
               // lettering, as it does on the reference.
               opacity: 0.88,
-              textShadow: "0 2px 40px rgba(20,16,14,0.45)",
+              textShadow: "var(--hero-title-shadow)",
             }}
           >
             {ARTIST.name}
@@ -101,7 +101,7 @@ function Home() {
         <div aria-hidden className="absolute inset-x-0 bottom-24 hidden justify-center md:flex">
           <span
             className="block overflow-hidden"
-            style={{ width: 1, height: 54, background: "rgba(246,239,233,0.25)" }}
+            style={{ width: 1, height: 54, background: "var(--cue-track)" }}
           >
             <span
               className="scroll-cue block"

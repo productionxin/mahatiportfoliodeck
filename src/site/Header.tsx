@@ -46,7 +46,7 @@ export function Header() {
         }}
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-8 px-6 py-5 md:px-10">
-          <Link to="/" className="shrink-0 transition-opacity hover:opacity-70">
+          <Link to="/" className="tap shrink-0 transition-opacity hover:opacity-70">
             <span
               className="font-display"
               style={{ color: fg, fontSize: "clamp(1.35rem, 2.2vw, 1.75rem)", letterSpacing: "0" }}
@@ -80,7 +80,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="lg:hidden"
+            className="tap w-11 justify-center lg:hidden"
             aria-label="Open menu"
             aria-expanded={open}
           >
@@ -105,7 +105,12 @@ export function Header() {
             <span className="font-display" style={{ fontSize: "1.35rem" }}>
               {ARTIST.name}
             </span>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Close menu">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="tap px-2"
+              aria-label="Close menu"
+            >
               <span className="eyebrow" style={{ color: "var(--color-rust)" }}>
                 Close
               </span>
@@ -206,7 +211,7 @@ export function Footer() {
             <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2">
               {NAV.map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="navlink transition-opacity hover:opacity-60">
+                  <Link to={item.to} className="navlink tap transition-opacity hover:opacity-60">
                     {item.label}
                   </Link>
                 </li>
@@ -220,7 +225,10 @@ export function Footer() {
             </span>
             <ul className="mt-4 space-y-2">
               <li>
-                <a href={`mailto:${ARTIST.email}`} className="navlink break-all hover:opacity-60">
+                <a
+                  href={`mailto:${ARTIST.email}`}
+                  className="navlink tap break-all hover:opacity-60"
+                >
                   {ARTIST.email}
                 </a>
               </li>
@@ -229,7 +237,7 @@ export function Footer() {
                   href={ARTIST.instagramUrl}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="navlink hover:opacity-60"
+                  className="navlink tap hover:opacity-60"
                 >
                   @{ARTIST.instagram}
                 </a>

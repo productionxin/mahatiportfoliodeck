@@ -77,7 +77,7 @@ function Contact() {
                   type="button"
                   onClick={() => setActive(k)}
                   aria-pressed={on}
-                  className="navlink pb-1 transition-opacity hover:opacity-60"
+                  className="navlink px-1 py-2.5 transition-opacity hover:opacity-60"
                   style={{
                     color: on ? "var(--color-rust)" : "var(--color-text)",
                     borderBottom: `1px solid ${on ? "var(--color-rust)" : "transparent"}`,

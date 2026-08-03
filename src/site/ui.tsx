@@ -89,7 +89,7 @@ export function PageTitle({
   return (
     <h1
       className={`font-display ${align === "center" ? "text-center" : ""} ${className}`}
-      style={{ fontSize: "clamp(2.6rem, 6.5vw, 5.2rem)", lineHeight: 1.02 }}
+      style={{ fontSize: "var(--text-h1)", lineHeight: 1.02 }}
     >
       {children}
     </h1>
@@ -99,7 +99,7 @@ export function PageTitle({
 export function Heading({
   children,
   as = "h2",
-  size = "clamp(1.8rem, 3.8vw, 2.9rem)",
+  size = "var(--text-h2)",
   italic = false,
   className = "",
   color,

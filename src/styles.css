@@ -17,38 +17,90 @@
  */
 
 @theme inline {
+  /* ===================================================================
+     LAYER 1 — PRIMITIVES
+     Raw values. Never referenced directly by a component; the semantic
+     layer below is what components are allowed to name.
+     =================================================================== */
+
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
 
-  /* Paper */
-  --color-paper: #f3eae4;
-  --color-paper-deep: #ebdfd7;
-  --color-paper-edge: #e2d4ca;
+  --blush-100: #f3eae4; /* page */
+  --blush-200: #ebdfd7; /* alternating band */
+  --blush-300: #e2d4ca; /* empty media well */
 
-  /* Ink — near-black, warmed so it belongs to the paper */
-  --color-text: #1c1a19;
-  --color-text-dim: #6b625c;
-  /* No third text tone: anything light enough to read as "faint" measured
-     3.2:1 on the deeper ground, and every place it was used carried real
-     information. Use --color-text-dim instead. */
+  --ink-900: #1c1a19; /* body copy */
+  --ink-500: #6b625c; /* secondary copy — 5.0:1 on blush-100 */
+  --ink-rgb: 28, 26, 25; /* for hairlines and scrims needing alpha */
 
-  /* The one accent. Small labels only, never large areas — and because those
-     labels are 11px letterspaced caps, it is set dark enough to clear 5:1 on
-     both paper grounds rather than sitting at the 4.5 minimum.
-     Named "rust" rather than "accent": the shadcn token block below also
-     declares --color-accent, and being later in the same @theme block it
-     silently won, resolving the whole palette's accent to a pale grey-blue. */
-  --color-rust: #9e351f;
-  --color-rust-soft: #d98a72;
+  --rust-600: #9e351f; /* labels — 5.9:1 on blush-100, 5.4:1 on blush-200 */
+  --rust-300: #d98a72; /* rust legible on photographic dark */
 
-  /* Rules and hairlines */
-  --color-hairline: rgba(28, 26, 25, 0.14);
-  --color-hairline-strong: rgba(28, 26, 25, 0.3);
+  --bone-100: #f6efe9; /* lettering over photographs */
+  --bone-300: #c9beb6; /* secondary lettering over photographs */
+  --bone-rgb: 246, 239, 233;
 
-  /* On dark photographic grounds */
-  --color-on-dark: #f6efe9;
-  --color-on-dark-dim: #c9beb6;
-  --color-shadow: #14100e;
+  --shadow-900: #14100e; /* the dark inside photographs */
+  --shadow-rgb: 20, 16, 14;
+
+  /* ===================================================================
+     LAYER 2 — SEMANTIC
+     What a colour is *for*. Components reference these.
+     =================================================================== */
+
+  --color-paper: var(--blush-100);
+  --color-paper-deep: var(--blush-200);
+  --color-paper-edge: var(--blush-300);
+
+  --color-text: var(--ink-900);
+  --color-text-dim: var(--ink-500);
+  /* Deliberately no third text tone: anything light enough to read as
+     "faint" measured 3.2:1 on the deeper ground, and every place it was
+     used carried real information. Use --color-text-dim. */
+
+  /* The one accent, for small labels only — never large areas. Set dark
+     enough to clear 5:1 rather than sitting at the 4.5 minimum, because
+     the labels are 11px letterspaced caps.
+     Named "rust" and not "accent" on purpose: the shadcn block later in
+     this same @theme declares --color-accent, and being last it silently
+     won, resolving the palette's accent to a pale grey-blue. */
+  --color-rust: var(--rust-600);
+  --color-rust-soft: var(--rust-300);
+
+  --color-hairline: rgba(var(--ink-rgb), 0.14);
+  --color-hairline-strong: rgba(var(--ink-rgb), 0.3);
+
+  --color-on-dark: var(--bone-100);
+  --color-on-dark-dim: var(--bone-300);
+  --color-shadow: var(--shadow-900);
+
+  /* ===================================================================
+     LAYER 3 — COMPONENT
+     Named for the thing that uses them. Added because these values were
+     previously written inline as raw rgba(), which put the darkness of
+     the overlays outside the token system entirely.
+     =================================================================== */
+
+  --scrim-lightbox: rgba(var(--shadow-rgb), 0.95);
+  --scrim-hero-top: rgba(var(--shadow-rgb), 0.5);
+  --scrim-hero-mid: rgba(var(--shadow-rgb), 0.08);
+  --scrim-hero-low: rgba(var(--shadow-rgb), 0.1);
+  --scrim-hero-foot: rgba(var(--shadow-rgb), 0.62);
+  --hero-title-shadow: 0 2px 40px rgba(var(--shadow-rgb), 0.45);
+  --cue-track: rgba(var(--bone-rgb), 0.25);
+
+  /* Type scale. Every display size on the site resolves to one of these
+     rather than an ad-hoc clamp() written at the call site. */
+  --text-label: 11px;
+  --text-nav: 16px;
+  --text-body: 17px;
+  --text-body-lg: 1.125rem;
+  --text-h4: clamp(1.2rem, 2vw, 1.5rem);
+  --text-h3: clamp(1.25rem, 2.4vw, 1.7rem);
+  --text-h2: clamp(1.8rem, 3.8vw, 2.9rem);
+  --text-h1: clamp(2.6rem, 6.5vw, 5.2rem);
+  --text-hero: clamp(2.6rem, 8.5vw, 7.5rem);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -173,7 +225,7 @@
     color: var(--color-text);
     font-family: var(--font-sans);
     font-weight: 300;
-    font-size: 17px;
+    font-size: var(--text-body);
     /* Loose leading — the reference reads airy, and long bio paragraphs need
        the room. */
     line-height: 1.85;
@@ -199,17 +251,25 @@
 /* Small caps label. Used for dates, venues, and section tags. */
 @utility eyebrow {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--text-label);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+/* Guarantees the 44px minimum touch target without changing how the
+   lettering looks — the hit area grows, the type does not. */
+@utility tap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 /* Navigation and link lettering — light, wide, quiet. */
 @utility navlink {
   font-family: var(--font-sans);
   font-weight: 300;
-  font-size: 16px;
+  font-size: var(--text-nav);
   letter-spacing: 0.01em;
 }
 

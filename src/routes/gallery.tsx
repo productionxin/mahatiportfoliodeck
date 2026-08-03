@@ -77,7 +77,7 @@ function Gallery() {
                     setOpen(null);
                   }}
                   aria-pressed={on}
-                  className="navlink pb-1 transition-opacity hover:opacity-60"
+                  className="navlink px-1 py-2.5 transition-opacity hover:opacity-60"
                   style={{
                     color: on ? "var(--color-rust)" : "var(--color-text)",
                     borderBottom: `1px solid ${on ? "var(--color-rust)" : "transparent"}`,
@@ -142,14 +142,16 @@ function Gallery() {
           aria-modal="true"
           aria-label={shown[open].caption}
           className="fixed inset-0 z-[90] flex items-center justify-center p-4"
-          style={{ background: "rgba(20,16,14,0.95)" }}
+          style={{ background: "var(--scrim-lightbox)" }}
           onClick={() => setOpen(null)}
           {...swipe}
         >
           <button
             type="button"
             onClick={() => setOpen(null)}
-            className="absolute right-6 top-6"
+            // Padded to clear the 44px minimum touch target; the label alone
+            // gave a ~40x14 hit area.
+            className="absolute right-3 top-3 px-4 py-3"
             aria-label="Close"
           >
             <span className="eyebrow" style={{ color: "var(--color-on-dark)" }}>
