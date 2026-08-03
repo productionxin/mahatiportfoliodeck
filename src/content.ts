@@ -29,28 +29,110 @@ export const ARTIST = {
   studio: "Production X",
 } as const;
 
-/* ------------------------------- the stages ------------------------------ */
+/* ------------------------------- the chapters ---------------------------- */
 
-export type Stage = { id: string; numeral: string; label: string };
+/**
+ * The site is structured as a bound volume rather than a single scroll: front
+ * matter, six chapters, then back matter (plates, honours, press, colophon).
+ * Each chapter is its own route so it can be linked and shared on its own —
+ * a programmer wants to send someone the repertoire, not a scroll position.
+ *
+ * `folio` is the printed page number shown in the corner. They are spaced to
+ * imply a real book's extent rather than counting screens.
+ */
+export type Chapter = {
+  slug: string;
+  numeral: string;
+  title: string;
+  subtitle: string;
+  epigraph: string;
+  folio: number;
+};
 
-export const STAGES: Stage[] = [
-  { id: "stage-1", numeral: "I", label: "Lineage" },
-  { id: "stage-2", numeral: "II", label: "Nritta & Abhinaya" },
-  { id: "stage-3", numeral: "III", label: "Beyond Kuchipudi" },
-  { id: "stage-4", numeral: "IV", label: "The Second Stage" },
-  { id: "stage-5", numeral: "V", label: "Natyavedam" },
-  { id: "stage-6", numeral: "VI", label: "The Room Before the Camera" },
+export const CHAPTERS: Chapter[] = [
+  {
+    slug: "lineage",
+    numeral: "I",
+    title: "Lineage",
+    subtitle: "Born into the practice",
+    epigraph: "The studio was my living room; the stage was inherited before I ever chose it.",
+    folio: 4,
+  },
+  {
+    slug: "nritta-abhinaya",
+    numeral: "II",
+    title: "Nritta & Abhinaya",
+    subtitle: "Twenty years under one guru",
+    epigraph: "Rhythm before meaning. Then meaning, carried by rhythm.",
+    folio: 12,
+  },
+  {
+    slug: "beyond-kuchipudi",
+    numeral: "III",
+    title: "Beyond Kuchipudi",
+    subtitle: "Vocabularies from other rooms",
+    epigraph: "Breath by breath. Step by step.",
+    folio: 28,
+  },
+  {
+    slug: "the-second-stage",
+    numeral: "IV",
+    title: "The Second Stage",
+    subtitle: "Before the camera, and in front of it",
+    epigraph: "Craft before performance.",
+    folio: 36,
+  },
+  {
+    slug: "natyavedam",
+    numeral: "V",
+    title: "Natyavedam",
+    subtitle: "Passing it forward",
+    epigraph: "What is kept is what is taught.",
+    folio: 48,
+  },
+  {
+    slug: "the-room",
+    numeral: "VI",
+    title: "The Room Before the Camera",
+    subtitle: "The practice now",
+    epigraph: "I watched from the doorway. Now the room is mine.",
+    folio: 56,
+  },
 ];
 
-/** Direct jumps for professional visitors who arrive with one question. */
-export const QUICK_LINKS = [
-  { href: "#repertoire", label: "Repertoire" },
-  { href: "#festivals", label: "Festivals" },
-  { href: "#filmography", label: "Filmography" },
-  { href: "#coaching", label: "Coaching" },
-  { href: "#press", label: "Press" },
-  { href: "#sheets", label: "One-sheets" },
-  { href: "#contact", label: "Contact" },
+/** Back matter — the apparatus a real volume carries after its chapters. */
+export type BackMatterEntry = {
+  to: string;
+  label: string;
+  description: string;
+  folio: number;
+};
+
+export const BACK_MATTER: BackMatterEntry[] = [
+  {
+    to: "/plates",
+    label: "Plates",
+    description: "The photographic record, catalogued.",
+    folio: 64,
+  },
+  {
+    to: "/honours",
+    label: "Honours",
+    description: "Grades, titles, festivals, and platforms.",
+    folio: 78,
+  },
+  {
+    to: "/press",
+    label: "Press",
+    description: "Selected writing on the work.",
+    folio: 86,
+  },
+  {
+    to: "/contact",
+    label: "Correspondence",
+    description: "One-sheets, enquiries, and the colophon.",
+    folio: 92,
+  },
 ];
 
 /* ----------------------------- credentials ------------------------------- */
@@ -258,6 +340,199 @@ export const PRESS: PressItem[] = [
       "Mrigthrusna — a cultural presentation on the realities of trafficking and the resilience of survivors — staged for 500 delegates before judges of the Supreme Court and Telangana High Court.",
     url: "https://telanganatoday.com/prajwala-hosts-anti-human-trafficking-conference-in-hyderabad",
     kind: "coverage",
+  },
+];
+
+/* -------------------------------- plates --------------------------------- */
+
+/**
+ * The photographic record. The library holds five distinct visual registers —
+ * mixing them freely is what made the earlier build read as a slide deck, so
+ * each plate declares its own and the gallery lets a visitor filter by it.
+ *
+ * `asset` is the filename in src/assets; the route resolves it to an import.
+ * Every plate is captioned rather than left bare — a catalogue, not a wall.
+ */
+export type Register = "stage" | "studio" | "portrait" | "film" | "archive";
+
+export type Plate = {
+  asset: string;
+  register: Register;
+  caption: string;
+  alt: string;
+};
+
+export const REGISTER_LABELS: Record<Register | "all", string> = {
+  all: "All Plates",
+  stage: "In Performance",
+  studio: "Studio",
+  portrait: "Portrait",
+  film: "Cinema",
+  archive: "Archive",
+};
+
+export const PLATES: Plate[] = [
+  {
+    asset: "cover_hero.jpg",
+    register: "studio",
+    caption: "Mudra, raised",
+    alt: "Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands.",
+  },
+  {
+    asset: "repertoire_studio.jpg",
+    register: "studio",
+    caption: "Bho Shambo — seated",
+    alt: "Mahati Bhikshu seated on a red floor against a black drape in a red and gold silk costume, hands clasped beneath her chin.",
+  },
+  {
+    asset: "repertoire_studio_2.jpg",
+    register: "studio",
+    caption: "Kshetrayya Padam — standing",
+    alt: "Mahati Bhikshu standing against a black drape in a red and gold silk costume, arms extended in a Kuchipudi stance.",
+  },
+  {
+    asset: "gallery_02.jpg",
+    register: "stage",
+    caption: "Nritta — red smoke",
+    alt: "Mahati Bhikshu in a dark green and magenta silk costume, fist raised and stance wide, lit against billowing red smoke.",
+  },
+  {
+    asset: "gallery_01.jpg",
+    register: "stage",
+    caption: "Turn, under violet",
+    alt: "Mahati Bhikshu mid-turn under violet stage light and haze, one leg lifted, in a magenta and green silk costume.",
+  },
+  {
+    asset: "gallery_03.jpg",
+    register: "stage",
+    caption: "Abhinaya",
+    alt: "Mahati Bhikshu in an expressive stance under warm stage light, gaze turned to the side.",
+  },
+  {
+    asset: "gallery_04.jpg",
+    register: "stage",
+    caption: "Tribhangi",
+    alt: "Mahati Bhikshu in a sharp tribhangi stance under red stage light.",
+  },
+  {
+    asset: "gallery_05.jpg",
+    register: "stage",
+    caption: "Weight, low",
+    alt: "Mahati Bhikshu under blue stage light in a green and copper silk costume, one arm extended, weight low.",
+  },
+  {
+    asset: "gallery_06.jpg",
+    register: "stage",
+    caption: "Nritta, violet",
+    alt: "Mahati Bhikshu in an expressive stance under violet stage light.",
+  },
+  {
+    asset: "gallery_07.jpg",
+    register: "stage",
+    caption: "Solo recital",
+    alt: "Mahati Bhikshu standing tall under blue stage light in a full Kuchipudi costume.",
+  },
+  {
+    asset: "gallery_08.jpg",
+    register: "stage",
+    caption: "Stillness",
+    alt: "Mahati Bhikshu in a quiet composed pose in a red and gold costume against near-black darkness.",
+  },
+  {
+    asset: "gallery_09.jpg",
+    register: "stage",
+    caption: "In motion",
+    alt: "Mahati Bhikshu in motion under blue stage light, drape lifting with the turn.",
+  },
+  {
+    asset: "gallery_10.jpg",
+    register: "stage",
+    caption: "Closing pose",
+    alt: "Mahati Bhikshu kneeling under blue stage light, one hand raised near her chin.",
+  },
+  {
+    asset: "principal_roles_group_tight.jpg",
+    register: "stage",
+    caption: "Sri Venkateswara Vilasam — Nizamabad, 2019",
+    alt: "Three dancers on a garlanded festival stage — Sri Venkateswara crowned at centre with Padmavathi and Lakshmi to either side, hands raised in abhaya.",
+  },
+  {
+    asset: "outdoor_fullpose.jpg",
+    register: "portrait",
+    caption: "Golden hour — wrists crossed",
+    alt: "Mahati Bhikshu seated on grass at golden hour in a green and magenta silk costume, wrists crossed in a mudra, trees blurred behind her.",
+  },
+  {
+    asset: "outdoor_portrait.jpg",
+    register: "portrait",
+    caption: "Golden hour — lowered gaze",
+    alt: "Mahati Bhikshu at golden hour in a magenta blouse and green silk with gold temple jewellery, head lowered, hand resting near her chin.",
+  },
+  {
+    asset: "contemporary_portrait_tight.jpg",
+    register: "portrait",
+    caption: "Editorial — silver and green",
+    alt: "Editorial portrait of Mahati Bhikshu in a dark green checked sari with silver tribal jewellery, one hand raised near her face in low warm light.",
+  },
+  {
+    asset: "hand_detail.jpg",
+    register: "studio",
+    caption: "Detail — mudra",
+    alt: "A hand held in a Kuchipudi mudra with red-tipped fingers, pearl and gold bracelets at the wrist, red silk sleeve below.",
+  },
+  {
+    asset: "eyes_detail.jpg",
+    register: "studio",
+    caption: "Detail — drishti",
+    alt: "Close crop of Mahati Bhikshu's eyes in performance make-up — heavy kohl liner and a red bindi.",
+  },
+  {
+    asset: "jewelry_detail.jpg",
+    register: "studio",
+    caption: "Detail — temple jewellery",
+    alt: "Temple jewellery detail — kemp stones set in gold with pearl drops.",
+  },
+  {
+    asset: "felicitation.jpg",
+    register: "archive",
+    caption: "Felicitation — the shawl",
+    alt: "An elder in a red printed shirt draping a pink silk shawl over Mahati Bhikshu's shoulders on stage, her hands folded in gratitude.",
+  },
+  {
+    asset: "award_ceremony.jpg",
+    register: "archive",
+    caption: "Nrithya Pratibha Puraskar",
+    alt: "Mahati Bhikshu on stage holding a framed citation, flanked by dignitaries and family after receiving the Nrithya Pratibha Puraskar.",
+  },
+  {
+    asset: "childhood_archival.jpg",
+    register: "archive",
+    caption: "Bala Narakasura — age eight",
+    alt: "A grainy archival video still: Mahati Bhikshu at age eight in costume on a dark stage, one arm extended in a mudra.",
+  },
+  {
+    asset: "film_sita.jpg",
+    register: "film",
+    caption: "Sita",
+    alt: "Film still from Sita — an interior scene, a woman in a red and cream sari standing beside a seated man.",
+  },
+  {
+    asset: "film_george_reddy.jpg",
+    register: "film",
+    caption: "George Reddy",
+    alt: "Film still from George Reddy — a student addressing a rally at a microphone before a hand-painted banner.",
+  },
+  {
+    asset: "film_radhe_shyam.jpg",
+    register: "film",
+    caption: "Radhe Shyam",
+    alt: "Film still from Radhe Shyam — a woman in round glasses carrying a first-aid crate aboard a train carriage.",
+  },
+  {
+    asset: "film_kinnerasani.jpg",
+    register: "film",
+    caption: "Kinnerasani",
+    alt: "Film still from Kinnerasani — a woman in an orange sari lying on stone in dappled outdoor light.",
   },
 ];
 

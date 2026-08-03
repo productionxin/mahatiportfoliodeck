@@ -9,38 +9,129 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PressRouteImport } from './routes/press'
+import { Route as PlatesRouteImport } from './routes/plates'
+import { Route as HonoursRouteImport } from './routes/honours'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
 
+const PressRoute = PressRouteImport.update({
+  id: '/press',
+  path: '/press',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlatesRoute = PlatesRouteImport.update({
+  id: '/plates',
+  path: '/plates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HonoursRoute = HonoursRouteImport.update({
+  id: '/honours',
+  path: '/honours',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChaptersSlugRoute = ChaptersSlugRouteImport.update({
+  id: '/chapters/$slug',
+  path: '/chapters/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/honours': typeof HonoursRoute
+  '/plates': typeof PlatesRoute
+  '/press': typeof PressRoute
+  '/chapters/$slug': typeof ChaptersSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/honours': typeof HonoursRoute
+  '/plates': typeof PlatesRoute
+  '/press': typeof PressRoute
+  '/chapters/$slug': typeof ChaptersSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact': typeof ContactRoute
+  '/honours': typeof HonoursRoute
+  '/plates': typeof PlatesRoute
+  '/press': typeof PressRoute
+  '/chapters/$slug': typeof ChaptersSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/contact'
+    | '/honours'
+    | '/plates'
+    | '/press'
+    | '/chapters/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/contact' | '/honours' | '/plates' | '/press' | '/chapters/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact'
+    | '/honours'
+    | '/plates'
+    | '/press'
+    | '/chapters/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactRoute: typeof ContactRoute
+  HonoursRoute: typeof HonoursRoute
+  PlatesRoute: typeof PlatesRoute
+  PressRoute: typeof PressRoute
+  ChaptersSlugRoute: typeof ChaptersSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/press': {
+      id: '/press'
+      path: '/press'
+      fullPath: '/press'
+      preLoaderRoute: typeof PressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plates': {
+      id: '/plates'
+      path: '/plates'
+      fullPath: '/plates'
+      preLoaderRoute: typeof PlatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/honours': {
+      id: '/honours'
+      path: '/honours'
+      fullPath: '/honours'
+      preLoaderRoute: typeof HonoursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +139,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chapters/$slug': {
+      id: '/chapters/$slug'
+      path: '/chapters/$slug'
+      fullPath: '/chapters/$slug'
+      preLoaderRoute: typeof ChaptersSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactRoute: ContactRoute,
+  HonoursRoute: HonoursRoute,
+  PlatesRoute: PlatesRoute,
+  PressRoute: PressRoute,
+  ChaptersSlugRoute: ChaptersSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
