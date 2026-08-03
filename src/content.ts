@@ -309,7 +309,13 @@ export type Register = "stage" | "studio" | "portrait" | "film" | "archive";
 export type Plate = {
   asset: string;
   register: Register;
-  caption: string;
+  /**
+   * Named from the practice, not from the photograph: a piece, a role, an
+   * occasion, or the technique visibly being performed. Optional on purpose —
+   * where nothing specific is known, a plate carries no caption rather than a
+   * description of its own lighting or furniture.
+   */
+  caption?: string;
   alt: string;
   /**
    * The frame's true aspect ratio. Stored rather than assumed: the gallery
@@ -333,13 +339,13 @@ export const PLATES: Plate[] = [
   {
     asset: "guru_mother_01.jpg",
     register: "archive",
-    caption: "With her guru — Prof. Aruna Bhikshu",
+    caption: "With her guru, Prof. Aruna Bhikshu",
     alt: "Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance.",
   },
   {
     asset: "guru_mother_02.jpg",
     register: "archive",
-    caption: "After a performance",
+    caption: "After a recital",
     alt: "Prof. Aruna Bhikshu and Mahati Bhikshu standing together outdoors in the evening, her mother's arm linked through hers.",
   },
 
@@ -347,19 +353,16 @@ export const PLATES: Plate[] = [
   {
     asset: "field_portrait.jpg",
     register: "portrait",
-    caption: "Daylight",
     alt: "Close portrait of Mahati Bhikshu outdoors in daylight, in a magenta and green silk costume with gold temple jewellery, head lowered and hand resting near her chin.",
   },
   {
     asset: "field_seated.jpg",
     register: "portrait",
-    caption: "Seated on grass",
     alt: "Mahati Bhikshu seated on grass in a green and magenta silk costume, one hand raised beside her head, trees blurred behind her.",
   },
   {
     asset: "contemporary_portrait_tight.jpg",
     register: "portrait",
-    caption: "Editorial",
     alt: "Editorial portrait of Mahati Bhikshu in a dark green checked sari with silver tribal jewellery, one hand raised near her face in low warm light.",
   },
 
@@ -368,7 +371,7 @@ export const PLATES: Plate[] = [
     asset: "cover_hero.jpg",
     ratio: "0.70",
     register: "studio",
-    caption: "Mudra, raised",
+    caption: "Hasta",
     alt: "Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands.",
   },
   {
@@ -388,7 +391,7 @@ export const PLATES: Plate[] = [
     asset: "hand_detail.jpg",
     ratio: "1/1",
     register: "studio",
-    caption: "Mudra",
+    caption: "Hasta",
     alt: "A hand held in a Kuchipudi mudra with red-tipped fingers, pearl and gold bracelets at the wrist, red silk sleeve below.",
   },
   {
@@ -402,7 +405,7 @@ export const PLATES: Plate[] = [
     asset: "jewelry_detail.jpg",
     ratio: "2/1",
     register: "studio",
-    caption: "Temple jewellery",
+    caption: "Aharya",
     alt: "Temple jewellery detail — kemp stones set in gold with pearl drops.",
   },
 
@@ -410,49 +413,48 @@ export const PLATES: Plate[] = [
   {
     asset: "stage_symmetry.jpg",
     register: "stage",
-    caption: "Symmetry",
+    caption: "Nritta",
     alt: "Mahati Bhikshu standing on a red-lit stage, both hands raised symmetrically beside her head in a mudra.",
   },
   {
     asset: "stage_fist.jpg",
     register: "stage",
-    caption: "Nritta — red smoke",
+    caption: "Nritta",
     alt: "Mahati Bhikshu with fist raised and stance wide, lit against billowing orange-red smoke.",
   },
   {
     asset: "stage_green.jpg",
     register: "stage",
-    caption: "Under green light",
+    caption: "Abhinaya",
     alt: "Mahati Bhikshu kneeling under green stage light, hands extended, two warm lamps glowing out of focus behind her.",
   },
   {
     asset: "stage_reaching.jpg",
     register: "stage",
-    caption: "Reaching",
+    caption: "Abhinaya",
     alt: "Mahati Bhikshu seated low under violet light and haze, one arm reaching out with fingers in a mudra.",
   },
   {
     asset: "stage_leap.jpg",
     register: "stage",
-    caption: "Mid-turn",
+    caption: "Bhramari",
     alt: "Mahati Bhikshu mid-turn under violet stage light, one leg lifted behind her, drape flaring with the movement.",
   },
   {
     asset: "stage_lunge.jpg",
     register: "stage",
-    caption: "Low lunge",
+    caption: "Araimandi",
     alt: "Mahati Bhikshu in a deep lunge across a teal-lit stage floor, one arm sweeping out behind her.",
   },
   {
     asset: "stage_arms_wide.jpg",
     register: "stage",
-    caption: "Arms wide",
+    caption: "Araimandi",
     alt: "Mahati Bhikshu in a low stance under blue light, both arms extended wide with palms open.",
   },
   {
     asset: "stage_mauve.jpg",
     register: "stage",
-    caption: "In haze",
     alt: "Mahati Bhikshu in profile against pale mauve haze, one hand raised, the stage otherwise dark.",
   },
   {
@@ -465,21 +467,18 @@ export const PLATES: Plate[] = [
     asset: "stage_recline_magenta.jpg",
     ratio: "3/2",
     register: "stage",
-    caption: "Floor work — magenta",
     alt: "Mahati Bhikshu reclining across the stage floor under magenta light, weight on one arm.",
   },
   {
     asset: "stage_recline_blue.jpg",
     ratio: "3/2",
     register: "stage",
-    caption: "Floor work — blue",
     alt: "The same reclining pose lit in deep blue, Mahati Bhikshu's hands drawn in towards her face.",
   },
   {
     asset: "stage_smoke_wide.jpg",
     ratio: "3/2",
     register: "stage",
-    caption: "Alone in the smoke",
     alt: "A wide frame of Mahati Bhikshu small against a full stage of orange smoke.",
   },
   {
@@ -509,7 +508,7 @@ export const PLATES: Plate[] = [
     asset: "archive_ceremony.jpg",
     ratio: "3/2",
     register: "archive",
-    caption: "On stage with her teachers",
+    caption: "Felicitation",
     alt: "A line of artists and dignitaries standing together on a decorated stage after a performance, a lit lamp at one side.",
   },
   {
