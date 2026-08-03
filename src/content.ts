@@ -48,6 +48,8 @@ export type EventItem = {
   city: string;
   note?: string;
   url?: string;
+  /** Event poster or programme, where one exists. */
+  image?: string;
 };
 
 export const EVENTS: EventItem[] = [
@@ -59,6 +61,7 @@ export const EVENTS: EventItem[] = [
     venue: "Shree Narayani Natyalaya",
     city: "Serilingampally, Hyderabad",
     note: "A Kuchipudi recital at the trust's second annual celebration, shared with Odissi dancer Sabarnik De.",
+    image: "event_archana_poster.jpg",
   },
   {
     title: "Mrigthrusna — Prajwala Conference",
@@ -259,6 +262,9 @@ export type PressItem = {
   summary: string;
   url?: string;
   kind: "feature" | "review" | "coverage";
+  /** The clipping itself. Press without the page is just a claim. */
+  image?: string;
+  ratio?: string;
 };
 
 /**
@@ -274,6 +280,8 @@ export const PRESS: PressItem[] = [
     summary:
       "A feature on the coaching practice — training debut leads, casting for Aakashavani, and growing up in a house where actors came to learn.",
     kind: "feature",
+    image: "press_eenadu.jpg",
+    ratio: "3/4",
   },
   {
     outlet: "Sakshi · Eenadu · and 20 more",
@@ -282,6 +290,8 @@ export const PRESS: PressItem[] = [
     summary:
       "A Kuchipudi recital at Shree Narayani Natyalaya, Kondapur, alongside Odissi dancer Sabarnik De. Covered across the Telugu dailies.",
     kind: "review",
+    image: "press_vaartha_mirror.jpg",
+    ratio: "1/1",
   },
   {
     outlet: "Telangana Today",
@@ -291,6 +301,8 @@ export const PRESS: PressItem[] = [
       "Mrigthrusna — a cultural presentation on the realities of trafficking and the resilience of survivors — staged for 500 delegates before judges of the Supreme Court and Telangana High Court.",
     url: "https://telanganatoday.com/prajwala-hosts-anti-human-trafficking-conference-in-hyderabad",
     kind: "coverage",
+    image: "press_telangana_today.jpg",
+    ratio: "4/3",
   },
 ];
 

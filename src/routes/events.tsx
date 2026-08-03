@@ -155,6 +155,22 @@ function EventRow({
       </div>
 
       <div>
+        {event.image && (
+          <div
+            className="mb-6 w-full max-w-[300px] overflow-hidden"
+            style={{
+              aspectRatio: "9/13",
+              border: "1px solid var(--color-hairline-strong)",
+            }}
+          >
+            <img
+              src={requireAsset(event.image)}
+              alt={`Programme for ${event.title}`}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
         <Heading as="h3" size="clamp(1.4rem, 3vw, 2.1rem)">
           {event.title}
         </Heading>

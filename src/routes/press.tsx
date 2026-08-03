@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { PRESS } from "@/content";
 import { ArrowLink, Body, Heading, Label, PageTitle, PageTop, Reveal, Section } from "@/site/ui";
+import { requireAsset } from "@/site/assets";
 
 export const Route = createFileRoute("/press")({
   component: Press,
@@ -49,8 +50,28 @@ function Press() {
                 className="py-12 md:py-16"
                 {...({ style: { borderTop: "1px solid var(--color-hairline)" } } as object)}
               >
-                <div className="grid gap-5 md:grid-cols-[220px_1fr] md:gap-12">
+                {/* The clipping runs alongside the entry. Press without the
+                    page is a claim; with it, it is evidence — and this page
+                    had no image on it at all. */}
+                <div className="grid gap-6 md:grid-cols-[260px_1fr] md:gap-12">
                   <div>
+                    {p.image && (
+                      <div
+                        className="mb-5 w-full overflow-hidden"
+                        style={{
+                          aspectRatio: p.ratio ?? "3/4",
+                          border: "1px solid var(--color-hairline-strong)",
+                          background: "var(--color-paper-deep)",
+                        }}
+                      >
+                        <img
+                          src={requireAsset(p.image)}
+                          alt={`${p.outlet} — ${p.headline}`}
+                          loading="lazy"
+                          className="h-full w-full object-cover object-top"
+                        />
+                      </div>
+                    )}
                     <Label>{KIND_LABEL[p.kind] ?? p.kind}</Label>
                     <p className="eyebrow mt-2" style={{ color: "var(--color-text-dim)" }}>
                       {p.date}

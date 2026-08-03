@@ -126,7 +126,20 @@ function Teaching() {
 
         {/* ---------------------------- the living room ------------------------- */}
         <Section className="py-20 md:py-28" width="text">
-          <Reveal className="text-center">
+          <Reveal>
+            {/* The claim on this page is that the coaching began in a room she
+                watched from as a child. The earliest frame in the archive is
+                the evidence for it, so it runs here rather than only in the
+                gallery. */}
+            <Figure
+              src={requireAsset("childhood_archival.jpg")}
+              alt="A grainy archival video still: Mahati Bhikshu at age eight in costume on a dark stage, one arm extended in a mudra."
+              ratio="16/9"
+              caption="Bala Narakasura — age eight"
+            />
+          </Reveal>
+
+          <Reveal className="mt-14 text-center">
             <Label>Before</Label>
             <Heading as="h2" size="clamp(1.6rem, 3.4vw, 2.4rem)" className="mt-5">
               Actors came to her parents' house to train while she was a child.
