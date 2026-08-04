@@ -7,6 +7,8 @@ import {
   Hairline,
   Heading,
   Label,
+  Lift,
+  Marquee,
   PageTitle,
   PageTop,
   Reveal,
@@ -52,9 +54,9 @@ function Works() {
         <Section className="pb-20 md:pb-28">
           <Reveal>
             <Label>Repertoire</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               Danced in full.
-            </Heading>
+            </Lift>
             <Body dim className="mt-5">
               Two pieces she returns to often — an invocation to Shiva, and a padam composed by the
               poet Kshetrayya. Both live in her solo recitals.
@@ -72,6 +74,7 @@ function Works() {
                       : "Mahati Bhikshu standing against a black drape in a red and gold silk costume, arms extended in a Kuchipudi stance."
                   }
                   ratio="4/5"
+                  delay={i * 140}
                 />
                 <Heading as="h3" size="clamp(1.5rem, 2.6vw, 2rem)" className="mt-5">
                   {r.title}
@@ -88,9 +91,9 @@ function Works() {
         <Section className="py-20 md:py-28" tone="deep">
           <Reveal>
             <Label>Principal roles</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               In production.
-            </Heading>
+            </Lift>
           </Reveal>
 
           <div className="mt-14 grid gap-12 md:grid-cols-12 md:items-center">
@@ -126,27 +129,26 @@ function Works() {
         <Section className="py-20 md:py-28">
           <Reveal>
             <Label>Where the work has been carried</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               Festivals and platforms.
-            </Heading>
+            </Lift>
           </Reveal>
 
+          {/* Hovering the column resolves it to one line at a time. A list of
+              sixteen venues is unreadable as a block; under the pointer it
+              becomes a place you are looking at, one at a time. */}
           <div className="mt-14 grid gap-x-10 gap-y-14 md:grid-cols-3">
             {FESTIVALS.map((group, gi) => (
               <Reveal key={group.group} delay={gi * 110}>
-                <Label tone="dim">{group.group}</Label>
-                <ul className="mt-5">
-                  {group.items.map((item) => (
-                    <li
-                      key={item}
-                      className="font-display py-3"
-                      style={{
-                        borderBottom: "1px solid var(--color-hairline)",
-                        fontSize: "1.1rem",
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {item}
+                <div className="flex items-baseline justify-between gap-4">
+                  <Label tone="dim">{group.group}</Label>
+                  <Label tone="dim">{String(group.items.length).padStart(2, "0")}</Label>
+                </div>
+                <ul className="index-list mt-5">
+                  {group.items.map((item, ii) => (
+                    <li key={item} className="index-row font-display py-3">
+                      <Hairline delay={ii * 45} className="mb-3" />
+                      <span style={{ fontSize: "1.1rem", lineHeight: 1.4 }}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -156,17 +158,24 @@ function Works() {
         </Section>
 
         {/* ---------------------------- international --------------------------- */}
-        <Section className="py-20 md:py-28" tone="deep" width="text">
-          <Reveal className="text-center">
+        {/* The cities run as an endless ticker rather than sitting as one
+            centred line. Three place names is a small fact set — moving, it
+            reads as a touring history. The band is full-bleed, so it also
+            breaks the page's column rhythm before the footer. */}
+        <section
+          className="overflow-hidden py-20 md:py-28"
+          style={{ background: "var(--color-paper-deep)" }}
+        >
+          <Reveal className="mx-auto max-w-[1240px] px-6 text-center md:px-10">
             <Label>Abroad</Label>
-            <Heading as="h2" size="clamp(2rem, 5vw, 3.4rem)" className="mt-5">
-              {INTERNATIONAL.cities.join(". ")}.
-            </Heading>
-            <Body dim className="mx-auto mt-7" measure="54ch">
+          </Reveal>
+          <Marquee items={INTERNATIONAL.cities} duration={26} className="mt-7" />
+          <Reveal className="mx-auto mt-8 max-w-[1240px] px-6 text-center md:px-10">
+            <Body dim className="mx-auto" measure="54ch">
               {INTERNATIONAL.note}
             </Body>
           </Reveal>
-        </Section>
+        </section>
       </PageTop>
     </main>
   );

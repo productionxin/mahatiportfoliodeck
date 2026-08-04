@@ -7,6 +7,7 @@ import {
   Hairline,
   Heading,
   Label,
+  Lift,
   PageTitle,
   PageTop,
   Reveal,
@@ -91,13 +92,10 @@ function Teaching() {
 
               <Reveal className="mt-12">
                 <Label tone="dim">In training</Label>
-                <ul className="mt-5">
-                  {COACHING.trained.map((t) => (
-                    <li
-                      key={t.name}
-                      className="py-5"
-                      style={{ borderTop: "1px solid var(--color-hairline)" }}
-                    >
+                <ul className="index-list mt-5">
+                  {COACHING.trained.map((t, i) => (
+                    <li key={t.name} className="index-row py-5">
+                      <Hairline delay={i * 70} className="mb-5" />
                       <Heading as="h3" size="clamp(1.25rem, 2.2vw, 1.6rem)">
                         {t.name}
                       </Heading>
@@ -141,9 +139,13 @@ function Teaching() {
 
           <Reveal className="mt-14 text-center">
             <Label>Before</Label>
-            <Heading as="h2" size="clamp(1.6rem, 3.4vw, 2.4rem)" className="mt-5">
-              Actors came to her parents' house to train while she was a child.
-            </Heading>
+            <Lift
+              as="h2"
+              className="font-display mt-5"
+              style={{ fontSize: "clamp(1.6rem, 3.4vw, 2.4rem)" }}
+            >
+              {"Actors came to her parents' house to train while she was a child."}
+            </Lift>
             <ul className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3">
               {COACHING.childhoodVisitors.map((n) => (
                 <li key={n} className="font-display italic" style={{ fontSize: "1.2rem" }}>

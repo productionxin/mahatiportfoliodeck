@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ARTIST, EVENTS, splitEvents, type EventItem } from "@/content";
-import { ArrowLink, Body, Heading, Label, PageTitle, PageTop, Reveal, Section } from "@/site/ui";
+import {
+  ArrowLink,
+  Body,
+  Figure,
+  Heading,
+  Label,
+  PageTitle,
+  PageTop,
+  Reveal,
+  Section,
+} from "@/site/ui";
 import { requireAsset } from "@/site/assets";
 
 export const Route = createFileRoute("/events")({
@@ -36,14 +46,13 @@ function Events() {
 
         <Section className="pb-16 md:pb-20">
           <Reveal>
-            <div className="w-full overflow-hidden" style={{ aspectRatio: "16/9" }}>
-              <img
-                src={requireAsset("stage_smoke_wide.jpg")}
-                alt="Mahati Bhikshu in a dark green and magenta silk costume, fist raised and stance wide, lit against billowing red smoke."
-                className="h-full w-full object-cover"
-                style={{ objectPosition: "50% 38%" }}
-              />
-            </div>
+            <Figure
+              src={requireAsset("stage_smoke_wide.jpg")}
+              alt="Mahati Bhikshu in a dark green and magenta silk costume, fist raised and stance wide, lit against billowing red smoke."
+              ratio="16/9"
+              objectPosition="50% 38%"
+              priority
+            />
             <Body dim className="mt-5">
               Below are Mahati's upcoming and past performances. For programming enquiries and
               available dates, please{" "}
@@ -66,7 +75,7 @@ function Events() {
           </Reveal>
 
           {upcoming.length > 0 ? (
-            <ul className="mt-8">
+            <ul className="index-list mt-8">
               {upcoming.map((e, i) => (
                 <EventRow key={e.title + e.iso} event={e} delay={i * 90} highlight />
               ))}
@@ -74,12 +83,10 @@ function Events() {
           ) : (
             <Reveal
               className="mt-8 px-6 py-14 text-center md:px-10"
-              {...({
-                style: {
-                  border: "1px solid var(--color-hairline-strong)",
-                  background: "var(--color-paper-deep)",
-                },
-              } as object)}
+              style={{
+                border: "1px solid var(--color-hairline-strong)",
+                background: "var(--color-paper-deep)",
+              }}
             >
               <Heading as="h2" size="clamp(1.4rem, 3vw, 2rem)">
                 No dates announced just now.
@@ -104,7 +111,7 @@ function Events() {
             <Reveal>
               <Label>Previously</Label>
             </Reveal>
-            <ul className="mt-8">
+            <ul className="index-list mt-8">
               {past.map((e, i) => (
                 <EventRow key={e.title + e.iso} event={e} delay={i * 80} />
               ))}
@@ -133,12 +140,10 @@ function EventRow({
     <Reveal
       as="li"
       delay={delay}
-      className="group grid gap-3 py-8 md:grid-cols-[200px_1fr] md:gap-10"
-      {...({
-        style: {
-          borderTop: `1px solid ${highlight ? "var(--color-rust)" : "var(--color-hairline)"}`,
-        },
-      } as object)}
+      className="index-row group grid gap-3 py-8 md:grid-cols-[200px_1fr] md:gap-10"
+      style={{
+        borderTop: `1px solid ${highlight ? "var(--color-rust)" : "var(--color-hairline)"}`,
+      }}
     >
       <div>
         <span
@@ -156,20 +161,12 @@ function EventRow({
 
       <div>
         {event.image && (
-          <div
-            className="mb-6 w-full max-w-[300px] overflow-hidden"
-            style={{
-              aspectRatio: "9/13",
-              border: "1px solid var(--color-hairline-strong)",
-            }}
-          >
-            <img
-              src={requireAsset(event.image)}
-              alt={`Programme for ${event.title}`}
-              loading="lazy"
-              className="h-full w-full object-cover"
-            />
-          </div>
+          <Figure
+            src={requireAsset(event.image)}
+            alt={`Programme for ${event.title}`}
+            ratio="9/13"
+            className="mb-6 max-w-[300px]"
+          />
         )}
         <Heading as="h3" size="clamp(1.4rem, 3vw, 2.1rem)">
           {event.title}

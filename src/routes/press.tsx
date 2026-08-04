@@ -1,8 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PRESS } from "@/content";
-import { ArrowLink, Body, Heading, Label, PageTitle, PageTop, Reveal, Section } from "@/site/ui";
+import {
+  ArrowLink,
+  Body,
+  Hairline,
+  Heading,
+  Label,
+  PageTitle,
+  PageTop,
+  Reveal,
+  Section,
+} from "@/site/ui";
 import { requireAsset } from "@/site/assets";
+import { useInView } from "@/site/motion";
 
 export const Route = createFileRoute("/press")({
   component: Press,
@@ -41,36 +52,17 @@ function Press() {
         </Section>
 
         <Section className="pb-24 md:pb-32">
-          <ul>
+          <ul className="index-list">
             {PRESS.map((p, i) => (
-              <Reveal
-                as="li"
-                key={p.headline}
-                delay={i * 90}
-                className="py-12 md:py-16"
-                {...({ style: { borderTop: "1px solid var(--color-hairline)" } } as object)}
-              >
+              <Reveal as="li" key={p.headline} delay={i * 90} className="index-row pb-12 md:pb-16">
+                <Hairline delay={i * 90} className="mb-12 md:mb-16" />
                 {/* The clipping runs alongside the entry. Press without the
                     page is a claim; with it, it is evidence — and this page
                     had no image on it at all. */}
                 <div className="grid gap-6 md:grid-cols-[260px_1fr] md:gap-12">
                   <div>
                     {p.image && (
-                      <div
-                        className="mb-5 w-full overflow-hidden"
-                        style={{
-                          aspectRatio: p.ratio ?? "3/4",
-                          border: "1px solid var(--color-hairline-strong)",
-                          background: "var(--color-paper-deep)",
-                        }}
-                      >
-                        <img
-                          src={requireAsset(p.image)}
-                          alt={`${p.outlet} — ${p.headline}`}
-                          loading="lazy"
-                          className="h-full w-full object-cover object-top"
-                        />
-                      </div>
+                      <Clipping src={p.image} ratio={p.ratio} alt={`${p.outlet} — ${p.headline}`} />
                     )}
                     <Label>{KIND_LABEL[p.kind] ?? p.kind}</Label>
                     <p className="eyebrow mt-2" style={{ color: "var(--color-text-dim)" }}>
@@ -102,8 +94,33 @@ function Press() {
               </Reveal>
             ))}
           </ul>
+          <Hairline />
         </Section>
       </PageTop>
     </main>
+  );
+}
+
+/** A scan of the page itself, wiping open as the entry arrives. */
+function Clipping({ src, ratio, alt }: { src: string; ratio?: string; alt: string }) {
+  const ref = useInView<HTMLDivElement>(0.15);
+  return (
+    <div ref={ref} className="mb-5 w-full">
+      <div
+        className="plate w-full overflow-hidden"
+        style={{
+          aspectRatio: ratio ?? "3/4",
+          border: "1px solid var(--color-hairline-strong)",
+          background: "var(--color-paper-deep)",
+        }}
+      >
+        <img
+          src={requireAsset(src)}
+          alt={alt}
+          loading="lazy"
+          className="h-full w-full object-cover object-top"
+        />
+      </div>
+    </div>
   );
 }

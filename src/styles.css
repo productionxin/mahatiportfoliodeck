@@ -352,9 +352,12 @@
   transform: scaleX(1);
 }
 
-/* Keyboard focus that is visible on both grounds without being loud. */
+/* Keyboard focus that is visible on both grounds without being loud.
+   Uses --color-rust and not --color-accent: shadcn owns --color-accent in
+   this stylesheet and resolves it to a pale grey-blue that all but vanished
+   on the paper ground. */
 :where(a, button, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-rust);
   outline-offset: 3px;
   border-radius: 1px;
 }
@@ -364,9 +367,184 @@
   transform: translateY(0);
 }
 
+/* ==========================================================================
+   MOTION VOCABULARY
+   Four moves, used everywhere, so the site reads as one hand rather than a
+   pile of effects. Everything is transform/opacity/clip-path only — no
+   layout properties animate — and everything is switched off further down
+   under prefers-reduced-motion.
+   ========================================================================== */
+
+/* 1. LIFT — display type rises out of a mask. The mask is what makes it
+      read as typesetting rather than a fade; the line is *revealed*, not
+      faded in. Set --lift-delay per word for a stagger. */
+.lift {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Fraunces descends below the baseline and the mask would guillotine the
+     tails of g, y and p. Pad the mask, then pull the padding back out of the
+     layout so the line height is untouched. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+/* The word gap is a margin rather than a space character. A space inside the
+   mask is collapsed away by overflow:hidden, and a non-breaking space stops
+   the headline wrapping — a margin does neither. */
+.lift[data-space="true"] {
+  margin-right: 0.26em;
+}
+.lift > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--lift-delay, 0ms);
+}
+/* `in` is set on the Lift container, not on each mask — the observer watches
+   the whole line so all its words release together. Both forms are matched so
+   a mask can also be driven on its own. */
+.in .lift > span,
+.lift.in > span {
+  transform: none;
+}
+
+/* 2. PLATE — a photograph wipes open from the bottom edge while the image
+      inside settles back from a slight over-scale. Two speeds moving
+      together is what stops it reading as a stock fade.
+
+      The `in` switch is always set on an ancestor, never on the clipped
+      element itself: Chromium applies a target's own clip-path when it
+      computes intersection area, so an IntersectionObserver watching a
+      fully-inset element measures zero area, never fires, and the plate
+      stays shut forever. */
+.plate {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1150ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--plate-delay, 0ms);
+}
+.plate > img,
+.plate > picture > img {
+  transform: scale(1.14);
+  transition: transform 1700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--plate-delay, 0ms);
+}
+.in .plate {
+  clip-path: inset(0 0 0 0);
+}
+.in .plate > img,
+.in .plate > picture > img {
+  transform: none;
+}
+
+/* The hover push rides `scale`, not `transform`, so it composes with the
+   arrival over-scale above instead of overwriting it. */
+.plate-zoom {
+  scale: 1;
+  transition: scale 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .plate-zoom,
+.group:focus-visible .plate-zoom {
+  scale: 1.05;
+}
+
+/* 3. RULE — a hairline draws itself across from the leading edge as its
+      section arrives, so every rule on the page is an event. */
+.rule-draw {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--rule-delay, 0ms);
+}
+.rule-draw.in {
+  transform: scaleX(1);
+}
+
+/* 4. DRIFT — the hero photograph breathes. Paired with the scroll parallax
+      on its wrapper, so the frame moves at one speed and the image inside
+      it at another. */
+@keyframes drift {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.13) translate3d(0, -1.2%, 0);
+  }
+}
+.drift {
+  animation: drift 26s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+/* Hero frames cross-dissolve on a long fade. Slow enough that the change
+   registers as light shifting on stage rather than as a slideshow. */
+.hero-frame {
+  opacity: 0;
+  transition: opacity 2000ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-frame[data-active="true"] {
+  opacity: 1;
+}
+
+/* Marquee. Two identical runs of the list translate by exactly half the
+   track, so the seam never arrives. Hovering holds it still for reading. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+.marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* An index row that dims its neighbours on hover, so the list resolves to
+   one line at a time instead of sitting there as a block. */
+.index-list:hover .index-row {
+  opacity: 0.38;
+}
+.index-list .index-row {
+  transition:
+    opacity 420ms ease,
+    color 420ms ease;
+}
+.index-list .index-row:hover,
+.index-list .index-row:focus-within {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .lift > span,
+  .plate,
+  .plate > img,
+  .rule-draw {
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+  .drift,
+  .marquee-track {
+    animation: none;
+  }
+  .plate-zoom,
+  .group:hover .plate-zoom {
+    scale: 1;
+    transition: none;
+  }
+  .hero-frame {
+    transition: none;
   }
   .reveal {
     opacity: 1;

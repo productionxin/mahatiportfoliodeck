@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { ARTIST, FACT_SHEETS } from "@/content";
-import { Body, Hairline, Heading, Label, PageTitle, PageTop, Reveal, Section } from "@/site/ui";
+import { Body, Hairline, Label, Lift, PageTitle, PageTop, Reveal, Section } from "@/site/ui";
+import { useInView } from "@/site/motion";
+import { requireAsset } from "@/site/assets";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -63,9 +65,9 @@ function Contact() {
         <Section className="py-20 md:py-28" tone="deep">
           <Reveal>
             <Label>At a glance</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               The same career, summarised for the question you came with.
-            </Heading>
+            </Lift>
           </Reveal>
 
           <Reveal className="mt-10 flex flex-wrap gap-7" delay={70}>
@@ -89,7 +91,10 @@ function Contact() {
             })}
           </Reveal>
 
-          <Reveal className="mt-10" delay={110}>
+          {/* Keyed on the active sheet so switching tabs replays the arrival
+              — without the key React reuses the nodes and the numbers change
+              underneath you with no acknowledgement that anything happened. */}
+          <div key={active} className="route-enter mt-10">
             <p className="font-display italic" style={{ fontSize: "1.25rem" }}>
               {sheet.blurb}
             </p>
@@ -120,8 +125,14 @@ function Contact() {
                 {active === "casting" ? "Enquire about casting" : "Enquire about booking"}
               </span>
             </a>
-          </Reveal>
+          </div>
         </Section>
+
+        {/* ------------------------------- sign-off ----------------------------- */}
+        {/* Contact was the one page with nothing to look at — a column of
+            addresses and a table. It closes on a plate instead, full-bleed and
+            wide, so the last thing a programmer sees is the work. */}
+        <ClosingPlate />
 
         {/* -------------------------------- credits ----------------------------- */}
         <Section className="py-20 md:py-28" width="text">
@@ -135,6 +146,37 @@ function Contact() {
         </Section>
       </PageTop>
     </main>
+  );
+}
+
+function ClosingPlate() {
+  const ref = useInView<HTMLElement>(0.1);
+  return (
+    <section ref={ref as never} className="relative w-full overflow-hidden">
+      <div className="plate relative w-full" style={{ aspectRatio: "21/9" }}>
+        <img
+          src={requireAsset("stage_recline_blue.jpg")}
+          alt="Mahati Bhikshu crouched low in blue stage haze, in a green and magenta silk costume, both hands drawn in towards her face."
+          loading="lazy"
+          className="h-full w-full object-cover"
+          style={{ objectPosition: "50% 40%" }}
+        />
+      </div>
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(180deg, transparent 45%, var(--scrim-hero-foot) 100%)",
+        }}
+      />
+      <div className="absolute inset-x-0 bottom-0 px-6 pb-8 md:px-10 md:pb-10">
+        <div className="mx-auto max-w-[1240px]">
+          <span className="eyebrow" style={{ color: "var(--color-on-dark)" }}>
+            {ARTIST.roles}
+          </span>
+        </div>
+      </div>
+    </section>
   );
 }
 

@@ -106,6 +106,138 @@ export function useParallax<T extends HTMLElement>(strength = 0.12) {
   return ref;
 }
 
+/**
+ * Adds `in` to an element the first time it enters view, and never removes
+ * it. This is the switch behind every CSS move in the vocabulary — `lift`,
+ * `plate`, `rule-draw` all sit inert until it fires — which keeps the
+ * animation in the stylesheet and only the timing in React.
+ *
+ * Under reduced motion the class goes on immediately, so the element is in
+ * its final state before the first paint rather than waiting on a scroll.
+ */
+export function useInView<T extends HTMLElement>(threshold = 0.15) {
+  const ref = useRef<T | null>(null);
+  const reduced = usePrefersReducedMotion();
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (reduced) {
+      el.classList.add("in");
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        // An element the visitor has already scrolled past — a restored
+        // scroll position, a fragment link, a fast flick before the first
+        // callback lands — reports isIntersecting false and would then never
+        // report again, leaving it invisible for the rest of the session.
+        // Treat "above the fold line" as arrived.
+        if (entry.isIntersecting || entry.boundingClientRect.bottom < 0) {
+          el.classList.add("in");
+          io.disconnect();
+        }
+      },
+      { threshold, rootMargin: "0px 0px -8% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [reduced, threshold]);
+  return ref;
+}
+
+/**
+ * Cycles the hero frames. Holds on the first frame under reduced motion,
+ * and pauses entirely while the tab is hidden so a backgrounded page is not
+ * quietly decoding photographs.
+ */
+export function useSlideshow(count: number, holdMs = 6400) {
+  const [i, setI] = useState(0);
+  const reduced = usePrefersReducedMotion();
+  useEffect(() => {
+    if (reduced || count < 2) return;
+    let timer = 0;
+    const schedule = () => {
+      timer = window.setTimeout(() => {
+        if (!document.hidden) setI((n) => (n + 1) % count);
+        schedule();
+      }, holdMs);
+    };
+    schedule();
+    return () => window.clearTimeout(timer);
+  }, [count, holdMs, reduced]);
+  return [i, setI] as const;
+}
+
+/**
+ * Tracks the pointer inside a container and reports where it is, so a hover
+ * preview can follow it. Returns null while the pointer is outside, and stays
+ * null on touch and under reduced motion — the preview is an enhancement over
+ * a list that already works without it.
+ */
+export function usePointerPreview<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const reduced = usePrefersReducedMotion();
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || reduced) return;
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    if (!fine) return;
+    let frame = 0;
+    // mousemove rather than pointermove: pointer events are not emitted by
+    // every synthetic-input path, and the pointer:fine gate above already
+    // does the job pointermove would have been used for.
+    const onMove = (e: MouseEvent) => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const r = el.getBoundingClientRect();
+        setPos({ x: e.clientX - r.left, y: e.clientY - r.top });
+      });
+    };
+    const onLeave = () => setPos(null);
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [reduced]);
+  return { ref, pos };
+}
+
+/**
+ * Normalised scroll depth through the first viewport, 0 → 1. Drives the hero
+ * title's departure: it should leave with the photograph rather than sit
+ * pinned while the page moves underneath it.
+ */
+export function useHeroScroll() {
+  const [t, setT] = useState(0);
+  const reduced = usePrefersReducedMotion();
+  useEffect(() => {
+    if (reduced) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      setT(Math.min(1, window.scrollY / Math.max(1, window.innerHeight * 0.72)));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [reduced]);
+  return t;
+}
+
 /** Horizontal swipe detection for the lightbox on touch devices. */
 export function useSwipe(onLeft: () => void, onRight: () => void) {
   const start = useRef<{ x: number; y: number } | null>(null);

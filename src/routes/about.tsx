@@ -7,6 +7,7 @@ import {
   Hairline,
   Heading,
   Label,
+  Lift,
   PageTitle,
   PageTop,
   Reveal,
@@ -77,15 +78,12 @@ function About() {
                     it is illustrated where it is told rather than left to the
                     gallery to carry. */}
                 <figure className="mt-10" style={{ maxWidth: 430 }}>
-                  <div className="w-full overflow-hidden" style={{ aspectRatio: "4/5" }}>
-                    <img
-                      src={requireAsset("guru_mother_01.jpg")}
-                      alt="Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance."
-                      loading="lazy"
-                      className="h-full w-full object-cover"
-                      style={{ objectPosition: "50% 26%" }}
-                    />
-                  </div>
+                  <Figure
+                    src={requireAsset("guru_mother_01.jpg")}
+                    alt="Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance."
+                    ratio="4/5"
+                    objectPosition="50% 26%"
+                  />
                   <figcaption className="mt-3">
                     <Label>Her guru</Label>
                     <p className="mt-2" style={{ color: "var(--color-text-dim)" }}>
@@ -117,9 +115,9 @@ function About() {
         <Section className="py-16 md:py-24" tone="deep">
           <Reveal>
             <Label>Recognition</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               Grades and titles.
-            </Heading>
+            </Lift>
           </Reveal>
           <div className="mt-12 grid gap-x-10 gap-y-10 sm:grid-cols-2">
             {TITLES.map((t, i) => (
@@ -140,9 +138,9 @@ function About() {
         <Section className="py-16 md:py-24">
           <Reveal>
             <Label>Also trained in</Label>
-            <Heading as="h2" className="mt-4">
+            <Lift as="h2" className="font-display mt-4" style={{ fontSize: "var(--text-h2)" }}>
               Other grammars.
-            </Heading>
+            </Lift>
             <Body dim className="mt-5">
               Kuchipudi is the spine. Each of these changed how she holds weight, or how she holds a
               pause.
@@ -166,9 +164,14 @@ function About() {
         {/* ------------------------------ statement ----------------------------- */}
         <Section className="py-20 md:py-28" width="text">
           <Reveal className="text-center">
-            <Heading as="h2" italic size="clamp(1.7rem, 4vw, 2.8rem)">
-              “{ARTIST.thesis}”
-            </Heading>
+            <Lift
+              as="h2"
+              step={120}
+              className="font-display italic"
+              style={{ fontSize: "clamp(1.7rem, 4vw, 2.8rem)" }}
+            >
+              {`“${ARTIST.thesis}”`}
+            </Lift>
           </Reveal>
         </Section>
       </PageTop>

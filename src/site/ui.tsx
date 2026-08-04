@@ -7,19 +7,32 @@
  */
 import { useEffect, useRef, useState } from "react";
 
+import { useInView } from "./motion";
+
 /* --------------------------------- reveal -------------------------------- */
 
+/**
+ * Fades and lifts its children in the first time they reach the viewport.
+ *
+ * Anything else passed in is forwarded to the rendered element. That is not
+ * cosmetic: without it every `style` and every event handler a caller wrote
+ * was silently swallowed, so rows that were supposed to carry a rule or
+ * respond to hover simply did nothing.
+ */
 export function Reveal({
   children,
   as: Tag = "div",
   className = "",
   delay = 0,
+  style,
+  ...rest
 }: {
   children: React.ReactNode;
   as?: keyof React.JSX.IntrinsicElements;
   className?: string;
   delay?: number;
-}) {
+  style?: React.CSSProperties;
+} & Record<string, unknown>) {
   const ref = useRef<HTMLElement | null>(null);
   useEffect(() => {
     const el = ref.current;
@@ -27,7 +40,9 @@ export function Reveal({
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting) {
+          // See useInView: something already scrolled past never reports
+          // again, so it has to be counted as arrived here and now.
+          if (entry.isIntersecting || entry.boundingClientRect.bottom < 0) {
             entry.target.classList.add("revealed");
             io.unobserve(entry.target);
           }
@@ -43,9 +58,50 @@ export function Reveal({
     <Comp
       ref={ref as never}
       className={`reveal ${className}`}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      style={delay ? { transitionDelay: `${delay}ms`, ...style } : style}
+      {...rest}
     >
       {children}
+    </Comp>
+  );
+}
+
+/**
+ * Display type that rises out of a mask, one word at a time.
+ *
+ * Words, not letters: letter-by-letter is the cliché of the genre and it
+ * shreds the kerning of a serif this fine. The stagger is short enough that
+ * a four-word line still resolves in under a second.
+ *
+ * The words stay in the DOM as ordinary text, so this reads normally to a
+ * screen reader and to a search engine — only the paint is animated.
+ */
+export function Lift({
+  children,
+  className = "",
+  step = 70,
+  as: Tag = "span",
+  style,
+}: {
+  children: string;
+  className?: string;
+  step?: number;
+  as?: "span" | "h1" | "h2" | "h3";
+  style?: React.CSSProperties;
+}) {
+  const ref = useInView<HTMLElement>(0.25);
+  const words = children.split(" ");
+  const Comp = Tag as React.ElementType;
+  return (
+    <Comp ref={ref as never} className={className} style={style}>
+      {words.map((w, i) => (
+        // The space sits between the masks, never inside one: a trailing
+        // space in an inline-block with overflow:hidden collapses away and
+        // the words would close up against each other.
+        <span key={`${w}-${i}`} className="lift" data-space={i < words.length - 1}>
+          <span style={{ ["--lift-delay" as string]: `${i * step}ms` }}>{w}</span>
+        </span>
+      ))}
     </Comp>
   );
 }
@@ -75,24 +131,27 @@ export function Label({
 
 /**
  * Page title. Centred by default, as the reference sets its section heads,
- * and sized to dominate the top of the page.
+ * and sized to dominate the top of the page. It rises out of a mask on
+ * arrival, so every section opens with the same gesture.
  */
 export function PageTitle({
   children,
   align = "center",
   className = "",
 }: {
-  children: React.ReactNode;
+  children: string;
   align?: "center" | "left";
   className?: string;
 }) {
   return (
-    <h1
+    <Lift
+      as="h1"
+      step={90}
       className={`font-display ${align === "center" ? "text-center" : ""} ${className}`}
       style={{ fontSize: "var(--text-h1)", lineHeight: 1.02 }}
     >
       {children}
-    </h1>
+    </Lift>
   );
 }
 
@@ -143,22 +202,108 @@ export function Body({
   );
 }
 
+/**
+ * A rule. It draws itself across from the leading edge when its section
+ * arrives, which turns the dozens of hairlines on this site from furniture
+ * into part of the page turning over. `static` opts out where the rule is
+ * structural rather than decorative.
+ */
 export function Hairline({
   className = "",
   strong = false,
+  delay = 0,
+  static: isStatic = false,
 }: {
   className?: string;
   strong?: boolean;
+  delay?: number;
+  static?: boolean;
 }) {
+  const ref = useInView<HTMLSpanElement>(0.2);
   return (
     <span
       aria-hidden
-      className={`block ${className}`}
+      ref={isStatic ? undefined : ref}
+      className={`block ${isStatic ? "" : "rule-draw"} ${className}`}
       style={{
         height: 1,
         background: strong ? "var(--color-hairline-strong)" : "var(--color-hairline)",
+        ["--rule-delay" as string]: `${delay}ms`,
       }}
     />
+  );
+}
+
+/**
+ * An endless horizontal run of short items. Used where a list is long,
+ * unranked and visually inert as a column — the festivals Mahati has been
+ * carried to are exactly that, and set as a ticker they read as a body of
+ * work rather than a spreadsheet.
+ *
+ * The children are rendered twice and the track travels exactly half its
+ * width, so the loop has no seam. The duplicate is hidden from assistive
+ * technology; the first run is the real list.
+ */
+export function Marquee({
+  items,
+  duration = 68,
+  reverse = false,
+  className = "",
+}: {
+  items: string[];
+  duration?: number;
+  reverse?: boolean;
+  className?: string;
+}) {
+  // A run has to be wider than the widest viewport or the track leaves a gap
+  // at the end of each cycle. Three city names do not manage that on their
+  // own, so the list is repeated until a run is long enough to fill it.
+  const reps = Math.max(1, Math.ceil(9 / items.length));
+  const filled = Array.from({ length: reps }).flatMap(() => items);
+  const run = () => (
+    <ul className="flex shrink-0 items-center" aria-hidden>
+      {filled.map((item, i) => (
+        <li key={`${item}-${i}`} className="flex shrink-0 items-center">
+          <span
+            className="font-display whitespace-nowrap"
+            style={{ fontSize: "clamp(1.4rem, 3vw, 2.3rem)" }}
+          >
+            {item}
+          </span>
+          <span
+            aria-hidden
+            className="mx-6 inline-block md:mx-9"
+            style={{
+              width: 5,
+              height: 5,
+              borderRadius: 999,
+              background: "var(--color-rust)",
+              opacity: 0.75,
+            }}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className={`marquee w-full overflow-hidden ${className}`}>
+      {/* The moving copy is repeated and therefore lies about how many items
+          there are, so all of it is hidden from assistive technology and the
+          real list is carried once, out of sight. */}
+      <ul className="sr-only">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+      <div
+        className="marquee-track"
+        data-reverse={reverse}
+        style={{ ["--marquee-duration" as string]: `${duration}s` }}
+      >
+        {run()}
+        {run()}
+      </div>
+    </div>
   );
 }
 
@@ -194,6 +339,13 @@ export function PageTop({ children }: { children: React.ReactNode }) {
 
 /* --------------------------------- media --------------------------------- */
 
+/**
+ * A plate. The frame wipes open from the bottom edge as it arrives while the
+ * photograph inside settles back from a slight over-scale — two speeds, which
+ * is what keeps it from reading as a stock fade-in.
+ *
+ * `zoom` adds a slow push on hover for plates that are also links.
+ */
 export function Figure({
   src,
   alt,
@@ -203,6 +355,9 @@ export function Figure({
   onClick,
   priority = false,
   className = "",
+  delay = 0,
+  zoom = false,
+  objectPosition,
 }: {
   src: string;
   alt: string;
@@ -212,19 +367,29 @@ export function Figure({
   onClick?: () => void;
   priority?: boolean;
   className?: string;
+  delay?: number;
+  zoom?: boolean;
+  objectPosition?: string;
 }) {
+  // The observer sits on the <figure>, never on the clipped element — see
+  // the note on .plate in styles.css.
+  const frameRef = useInView<HTMLElement>(0.15);
   const media = (
-    <div className="relative w-full overflow-hidden" style={{ aspectRatio: ratio }}>
+    <div
+      className="plate relative w-full overflow-hidden"
+      style={{ aspectRatio: ratio, ["--plate-delay" as string]: `${delay}ms` }}
+    >
       <img
         src={src}
         alt={alt}
         loading={priority ? "eager" : "lazy"}
-        className="h-full w-full object-cover"
+        className={`h-full w-full object-cover ${zoom ? "plate-zoom" : ""}`}
+        style={{ objectPosition }}
       />
     </div>
   );
   return (
-    <figure className={`w-full ${className}`}>
+    <figure ref={frameRef as never} className={`w-full ${className}`}>
       {onClick ? (
         <button
           type="button"
