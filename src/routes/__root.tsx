@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Footer, Header } from "../site/Header";
+import { RouteTransition, ScrollProgress } from "../site/motion";
 
 function NotFoundComponent() {
   return (
@@ -78,16 +80,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
-      { name: "description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
+      {
+        name: "description",
+        content:
+          "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator.",
+      },
       { name: "author", content: "Mahati Bhikshu" },
       { property: "og:title", content: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
-      { property: "og:description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
+      {
+        property: "og:description",
+        content:
+          "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Mahati Bhikshu — Kuchipudi Artist, Actor, Choreographer" },
-      { name: "twitter:description", content: "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png" },
+      {
+        name: "twitter:description",
+        content:
+          "One life. Many stages. An editorial portfolio of Mahati Bhikshu — Kuchipudi dancer, film actor, choreographer, and educator.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f683bb6f-99a5-44c1-bbc2-de0191be124a/id-preview-3431f905--3307c63a-7c5d-4d7c-9908-a1baefe331c9.lovable.app-1784214028737.png",
+      },
     ],
     links: [
       {
@@ -96,10 +118,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" } as unknown as { rel: string; href: string },
       {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      } as unknown as { rel: string; href: string },
+      {
+        // Fraunces for display (high contrast, soft wedge serifs) and Jost for
+        // body at light weights — the pairing the design is set in.
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Jost:ital,wght@0,300..600;1,300..500&display=swap",
       },
     ],
   }),
@@ -128,8 +156,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollProgress />
+      <Header />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <RouteTransition>
+        <Outlet />
+      </RouteTransition>
+      <Footer />
     </QueryClientProvider>
   );
 }

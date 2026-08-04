@@ -25,33 +25,69 @@ export const ARTIST = {
   instagramUrl: "https://www.instagram.com/mahatibhikshu/",
   imdbUrl: "https://www.imdb.com/name/nm5825092/",
   imdbId: "nm5825092",
-  photographyCredit: "Beyond Portrait Studio",
   studio: "Production X",
 } as const;
 
-/* ------------------------------- the stages ------------------------------ */
+/* -------------------------------- events --------------------------------- */
 
-export type Stage = { id: string; numeral: string; label: string };
+/**
+ * Performances and events.
+ *
+ * Only engagements that are documented get listed — the past entries below
+ * come from the press archive and the event poster. Add upcoming dates here
+ * and they surface automatically at the top of /events and on the home page;
+ * when there are none, the page says so rather than showing a stale list.
+ */
+export type EventItem = {
+  title: string;
+  date: string;
+  /** ISO date, used only for sorting and for the upcoming/past split. */
+  iso: string;
+  time?: string;
+  venue: string;
+  city: string;
+  note?: string;
+  url?: string;
+  /** Event poster or programme, where one exists. */
+  image?: string;
+};
 
-export const STAGES: Stage[] = [
-  { id: "stage-1", numeral: "I", label: "Lineage" },
-  { id: "stage-2", numeral: "II", label: "Nritta & Abhinaya" },
-  { id: "stage-3", numeral: "III", label: "Beyond Kuchipudi" },
-  { id: "stage-4", numeral: "IV", label: "The Second Stage" },
-  { id: "stage-5", numeral: "V", label: "Natyavedam" },
-  { id: "stage-6", numeral: "VI", label: "The Room Before the Camera" },
+export const EVENTS: EventItem[] = [
+  {
+    title: "Nritya Deva Archana — Edition 2",
+    date: "4 July 2026",
+    iso: "2026-07-04",
+    time: "5:30 PM",
+    venue: "Shree Narayani Natyalaya",
+    city: "Serilingampally, Hyderabad",
+    note: "A Kuchipudi recital at the trust's second annual celebration, shared with Odissi dancer Sabarnik De.",
+    image: "event_archana_poster.jpg",
+  },
+  {
+    title: "Mrigthrusna — Prajwala Conference",
+    date: "2026",
+    iso: "2026-01-01",
+    venue: "Anti-Human Trafficking Conference",
+    city: "Hyderabad",
+    note: "A cultural presentation on trafficking and the resilience of survivors, staged for 500 delegates before judges of the Supreme Court and the Telangana High Court.",
+  },
+  {
+    title: "Sri Venkateswara Vilasam",
+    date: "2019",
+    iso: "2019-01-01",
+    venue: "Gudi Sambaralu",
+    city: "Nizamabad",
+    note: "Principal roles — Sri Padmavathi Devi, Goddess Lakshmi Devi and Sri Venkateswara Swamy.",
+  },
 ];
 
-/** Direct jumps for professional visitors who arrive with one question. */
-export const QUICK_LINKS = [
-  { href: "#repertoire", label: "Repertoire" },
-  { href: "#festivals", label: "Festivals" },
-  { href: "#filmography", label: "Filmography" },
-  { href: "#coaching", label: "Coaching" },
-  { href: "#press", label: "Press" },
-  { href: "#sheets", label: "One-sheets" },
-  { href: "#contact", label: "Contact" },
-];
+/** Splits the diary against a reference date, newest first within each half. */
+export function splitEvents(events: EventItem[], now = new Date()) {
+  const today = now.toISOString().slice(0, 10);
+  const upcoming = events.filter((e) => e.iso >= today).sort((a, b) => a.iso.localeCompare(b.iso));
+  const past = events.filter((e) => e.iso < today).sort((a, b) => b.iso.localeCompare(a.iso));
+  return { upcoming, past };
+}
 
 /* ----------------------------- credentials ------------------------------- */
 
@@ -226,6 +262,9 @@ export type PressItem = {
   summary: string;
   url?: string;
   kind: "feature" | "review" | "coverage";
+  /** The clipping itself. Press without the page is just a claim. */
+  image?: string;
+  ratio?: string;
 };
 
 /**
@@ -241,6 +280,8 @@ export const PRESS: PressItem[] = [
     summary:
       "A feature on the coaching practice — training debut leads, casting for Aakashavani, and growing up in a house where actors came to learn.",
     kind: "feature",
+    image: "press_eenadu.jpg",
+    ratio: "3/4",
   },
   {
     outlet: "Sakshi · Eenadu · and 20 more",
@@ -249,6 +290,8 @@ export const PRESS: PressItem[] = [
     summary:
       "A Kuchipudi recital at Shree Narayani Natyalaya, Kondapur, alongside Odissi dancer Sabarnik De. Covered across the Telugu dailies.",
     kind: "review",
+    image: "press_vaartha_mirror.jpg",
+    ratio: "1/1",
   },
   {
     outlet: "Telangana Today",
@@ -258,6 +301,264 @@ export const PRESS: PressItem[] = [
       "Mrigthrusna — a cultural presentation on the realities of trafficking and the resilience of survivors — staged for 500 delegates before judges of the Supreme Court and Telangana High Court.",
     url: "https://telanganatoday.com/prajwala-hosts-anti-human-trafficking-conference-in-hyderabad",
     kind: "coverage",
+    image: "press_telangana_today.jpg",
+    ratio: "4/3",
+  },
+];
+
+/* -------------------------------- plates --------------------------------- */
+
+/**
+ * The photographic record. The library holds five distinct visual registers —
+ * mixing them freely is what made the earlier build read as a slide deck, so
+ * each plate declares its own and the gallery lets a visitor filter by it.
+ *
+ * `asset` is the filename in src/assets; the route resolves it to an import.
+ * Every plate is captioned rather than left bare — a catalogue, not a wall.
+ */
+export type Register = "stage" | "studio" | "portrait" | "film" | "archive";
+
+export type Plate = {
+  asset: string;
+  register: Register;
+  /**
+   * Named from the practice, not from the photograph: a piece, a role, an
+   * occasion, or the technique visibly being performed. Optional on purpose —
+   * where nothing specific is known, a plate carries no caption rather than a
+   * description of its own lighting or furniture.
+   */
+  caption?: string;
+  alt: string;
+  /**
+   * The frame's true aspect ratio. Stored rather than assumed: the gallery
+   * used to render every plate at 4:5, which re-cropped the 2:3 portraits and
+   * cut heads off. Rendering each plate at its own ratio means the crop that
+   * was made deliberately on export is the crop that ships.
+   */
+  ratio?: string;
+};
+
+export const REGISTER_LABELS: Record<Register | "all", string> = {
+  all: "All Plates",
+  stage: "In Performance",
+  studio: "Studio",
+  portrait: "Portrait",
+  film: "Cinema",
+  archive: "Archive",
+};
+
+export const PLATES: Plate[] = [
+  {
+    asset: "guru_mother_01.jpg",
+    register: "archive",
+    caption: "With her guru, Prof. Aruna Bhikshu",
+    alt: "Mahati Bhikshu in a green and magenta Kuchipudi costume standing arm-in-arm with her mother and guru Prof. Aruna Bhikshu, who wears a deep red silk saree, on grass at night after a performance.",
+  },
+  {
+    asset: "guru_mother_02.jpg",
+    register: "archive",
+    caption: "After a recital",
+    alt: "Prof. Aruna Bhikshu and Mahati Bhikshu standing together outdoors in the evening, her mother's arm linked through hers.",
+  },
+
+  /* ------------------------------ portraiture ----------------------------- */
+  {
+    asset: "field_portrait.jpg",
+    register: "portrait",
+    alt: "Close portrait of Mahati Bhikshu outdoors in daylight, in a magenta and green silk costume with gold temple jewellery, head lowered and hand resting near her chin.",
+  },
+  {
+    asset: "field_seated.jpg",
+    register: "portrait",
+    alt: "Mahati Bhikshu seated on grass in a green and magenta silk costume, one hand raised beside her head, trees blurred behind her.",
+  },
+  {
+    asset: "contemporary_portrait_tight.jpg",
+    register: "portrait",
+    alt: "Editorial portrait of Mahati Bhikshu in a dark green checked sari with silver tribal jewellery, one hand raised near her face in low warm light.",
+  },
+
+  /* -------------------------------- studio -------------------------------- */
+  {
+    asset: "cover_hero.jpg",
+    ratio: "0.70",
+    register: "studio",
+    caption: "Hasta",
+    alt: "Mahati Bhikshu in a red silk blouse and gold-woven silk drape, one hand raised in a mudra, against a black backdrop hung with temple garlands.",
+  },
+  {
+    asset: "repertoire_studio.jpg",
+    ratio: "3/2",
+    register: "studio",
+    caption: "Bho Shambo — seated",
+    alt: "Mahati Bhikshu seated on a red floor against a black drape in a red and gold silk costume, hands clasped beneath her chin.",
+  },
+  {
+    asset: "repertoire_studio_2.jpg",
+    register: "studio",
+    caption: "Kshetrayya Padam — standing",
+    alt: "Mahati Bhikshu standing against a black drape in a red and gold silk costume, arms extended in a Kuchipudi stance.",
+  },
+  {
+    asset: "hand_detail.jpg",
+    ratio: "1/1",
+    register: "studio",
+    caption: "Hasta",
+    alt: "A hand held in a Kuchipudi mudra with red-tipped fingers, pearl and gold bracelets at the wrist, red silk sleeve below.",
+  },
+  {
+    asset: "eyes_detail.jpg",
+    ratio: "2/1",
+    register: "studio",
+    caption: "Drishti",
+    alt: "Close crop of Mahati Bhikshu's eyes in performance make-up — heavy kohl liner and a red bindi.",
+  },
+  {
+    asset: "jewelry_detail.jpg",
+    ratio: "2/1",
+    register: "studio",
+    caption: "Aharya",
+    alt: "Temple jewellery detail — kemp stones set in gold with pearl drops.",
+  },
+
+  /* ----------------------------- in performance --------------------------- */
+  {
+    asset: "stage_symmetry.jpg",
+    register: "stage",
+    caption: "Nritta",
+    alt: "Mahati Bhikshu standing on a red-lit stage, both hands raised symmetrically beside her head in a mudra.",
+  },
+  {
+    asset: "stage_fist.jpg",
+    register: "stage",
+    caption: "Nritta",
+    alt: "Mahati Bhikshu with fist raised and stance wide, lit against billowing orange-red smoke.",
+  },
+  {
+    asset: "stage_green.jpg",
+    register: "stage",
+    caption: "Abhinaya",
+    alt: "Mahati Bhikshu kneeling under green stage light, hands extended, two warm lamps glowing out of focus behind her.",
+  },
+  {
+    asset: "stage_reaching.jpg",
+    register: "stage",
+    caption: "Abhinaya",
+    alt: "Mahati Bhikshu seated low under violet light and haze, one arm reaching out with fingers in a mudra.",
+  },
+  {
+    asset: "stage_leap.jpg",
+    register: "stage",
+    caption: "Bhramari",
+    alt: "Mahati Bhikshu mid-turn under violet stage light, one leg lifted behind her, drape flaring with the movement.",
+  },
+  {
+    asset: "stage_lunge.jpg",
+    register: "stage",
+    caption: "Araimandi",
+    alt: "Mahati Bhikshu in a deep lunge across a teal-lit stage floor, one arm sweeping out behind her.",
+  },
+  {
+    asset: "stage_arms_wide.jpg",
+    register: "stage",
+    caption: "Araimandi",
+    alt: "Mahati Bhikshu in a low stance under blue light, both arms extended wide with palms open.",
+  },
+  {
+    asset: "stage_mauve.jpg",
+    register: "stage",
+    alt: "Mahati Bhikshu in profile against pale mauve haze, one hand raised, the stage otherwise dark.",
+  },
+  {
+    asset: "stage_blue.jpg",
+    register: "stage",
+    caption: "Abhinaya",
+    alt: "Mahati Bhikshu under deep blue light, hands held in an expressive gesture near her shoulder.",
+  },
+  {
+    asset: "stage_recline_magenta.jpg",
+    ratio: "3/2",
+    register: "stage",
+    alt: "Mahati Bhikshu reclining across the stage floor under magenta light, weight on one arm.",
+  },
+  {
+    asset: "stage_recline_blue.jpg",
+    ratio: "3/2",
+    register: "stage",
+    alt: "The same reclining pose lit in deep blue, Mahati Bhikshu's hands drawn in towards her face.",
+  },
+  {
+    asset: "stage_smoke_wide.jpg",
+    ratio: "3/2",
+    register: "stage",
+    alt: "A wide frame of Mahati Bhikshu small against a full stage of orange smoke.",
+  },
+  {
+    asset: "principal_roles_group_tight.jpg",
+    ratio: "5/6",
+    register: "stage",
+    caption: "Sri Venkateswara Vilasam — Nizamabad, 2019",
+    alt: "Three dancers on a garlanded festival stage — Sri Venkateswara crowned at centre with Padmavathi and Lakshmi to either side, hands raised in abhaya.",
+  },
+
+  /* -------------------------------- archive ------------------------------- */
+  {
+    asset: "felicitation.jpg",
+    ratio: "0.55",
+    register: "archive",
+    caption: "Felicitation",
+    alt: "An elder in a red printed shirt draping a pink silk shawl over Mahati Bhikshu's shoulders on stage, her hands folded in gratitude.",
+  },
+  {
+    asset: "award_ceremony.jpg",
+    ratio: "3/2",
+    register: "archive",
+    caption: "Nrithya Pratibha Puraskar",
+    alt: "Mahati Bhikshu on stage holding a framed citation, flanked by dignitaries and family.",
+  },
+  {
+    asset: "archive_ceremony.jpg",
+    ratio: "3/2",
+    register: "archive",
+    caption: "Felicitation",
+    alt: "A line of artists and dignitaries standing together on a decorated stage after a performance, a lit lamp at one side.",
+  },
+  {
+    asset: "childhood_archival.jpg",
+    ratio: "16/9",
+    register: "archive",
+    caption: "Bala Narakasura — age eight",
+    alt: "A grainy archival video still: Mahati Bhikshu at age eight in costume on a dark stage, one arm extended in a mudra.",
+  },
+
+  /* -------------------------------- cinema -------------------------------- */
+  {
+    asset: "film_sita.jpg",
+    ratio: "16/9",
+    register: "film",
+    caption: "Sita",
+    alt: "Film still from Sita — an interior scene, a woman in a red and cream sari standing beside a seated man.",
+  },
+  {
+    asset: "film_george_reddy.jpg",
+    ratio: "16/9",
+    register: "film",
+    caption: "George Reddy",
+    alt: "Film still from George Reddy — a student addressing a rally at a microphone before a hand-painted banner.",
+  },
+  {
+    asset: "film_radhe_shyam.jpg",
+    ratio: "16/9",
+    register: "film",
+    caption: "Radhe Shyam",
+    alt: "Film still from Radhe Shyam — a woman in round glasses carrying a first-aid crate aboard a train carriage.",
+  },
+  {
+    asset: "film_kinnerasani.jpg",
+    ratio: "16/9",
+    register: "film",
+    caption: "Kinnerasani",
+    alt: "Film still from Kinnerasani — a woman in an orange sari lying on stone in dappled outdoor light.",
   },
 ];
 

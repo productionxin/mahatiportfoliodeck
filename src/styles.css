@@ -5,30 +5,102 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Mahati Bhikshu — Editorial Portfolio
- * Design tokens locked to spec: ink, parchment, gold, oxblood, emerald.
+ * Mahati Bhikshu — portfolio.
+ *
+ * The palette is warm and light: a blush paper ground, near-black text, and a
+ * single rust accent used sparingly for small labels. Photographs supply all
+ * the darkness, which is why the ground stays quiet — it has to sit under
+ * stage light, golden hour and film stills without competing with any of them.
+ *
+ * Fraunces carries the display sizes (high contrast, soft wedge serifs) and
+ * Jost the body at light weights with generous leading.
  */
 
 @theme inline {
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* ===================================================================
+     LAYER 1 — PRIMITIVES
+     Raw values. Never referenced directly by a component; the semantic
+     layer below is what components are allowed to name.
+     =================================================================== */
 
-  --color-ink-900: #15130f;
-  --color-ink-800: #211d17;
-  --color-parchment-100: #f3ecdc;
-  --color-parchment-200: #e9dfc9;
-  --color-gold-500: #b88a3e;
-  --color-gold-400: #d1a75a;
-  --color-oxblood-600: #7a2331;
-  /* Oxblood marks the cinema register. The 600 is only legible on parchment
-     (7.5:1); on the ink grounds it drops to 1.7:1, so dark sections use this
-     lighter tint instead — 5.1:1 on ink-800 — and keep the colour coding. */
-  --color-oxblood-400: #c9776a;
-  --color-emerald-600: #3b6653;
-  --color-on-ink: #e9e2cf;
-  --color-on-ink-dim: #b8ae95;
-  --color-on-parch: #221e17;
-  --color-on-parch-dim: #5b5140;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+
+  --blush-100: #f3eae4; /* page */
+  --blush-200: #ebdfd7; /* alternating band */
+  --blush-300: #e2d4ca; /* empty media well */
+
+  --ink-900: #1c1a19; /* body copy */
+  --ink-500: #6b625c; /* secondary copy — 5.0:1 on blush-100 */
+  --ink-rgb: 28, 26, 25; /* for hairlines and scrims needing alpha */
+
+  --rust-600: #9e351f; /* labels — 5.9:1 on blush-100, 5.4:1 on blush-200 */
+  --rust-300: #d98a72; /* rust legible on photographic dark */
+
+  --bone-100: #f6efe9; /* lettering over photographs */
+  --bone-300: #c9beb6; /* secondary lettering over photographs */
+  --bone-rgb: 246, 239, 233;
+
+  --shadow-900: #14100e; /* the dark inside photographs */
+  --shadow-rgb: 20, 16, 14;
+
+  /* ===================================================================
+     LAYER 2 — SEMANTIC
+     What a colour is *for*. Components reference these.
+     =================================================================== */
+
+  --color-paper: var(--blush-100);
+  --color-paper-deep: var(--blush-200);
+  --color-paper-edge: var(--blush-300);
+
+  --color-text: var(--ink-900);
+  --color-text-dim: var(--ink-500);
+  /* Deliberately no third text tone: anything light enough to read as
+     "faint" measured 3.2:1 on the deeper ground, and every place it was
+     used carried real information. Use --color-text-dim. */
+
+  /* The one accent, for small labels only — never large areas. Set dark
+     enough to clear 5:1 rather than sitting at the 4.5 minimum, because
+     the labels are 11px letterspaced caps.
+     Named "rust" and not "accent" on purpose: the shadcn block later in
+     this same @theme declares --color-accent, and being last it silently
+     won, resolving the palette's accent to a pale grey-blue. */
+  --color-rust: var(--rust-600);
+  --color-rust-soft: var(--rust-300);
+
+  --color-hairline: rgba(var(--ink-rgb), 0.14);
+  --color-hairline-strong: rgba(var(--ink-rgb), 0.3);
+
+  --color-on-dark: var(--bone-100);
+  --color-on-dark-dim: var(--bone-300);
+  --color-shadow: var(--shadow-900);
+
+  /* ===================================================================
+     LAYER 3 — COMPONENT
+     Named for the thing that uses them. Added because these values were
+     previously written inline as raw rgba(), which put the darkness of
+     the overlays outside the token system entirely.
+     =================================================================== */
+
+  --scrim-lightbox: rgba(var(--shadow-rgb), 0.95);
+  --scrim-hero-top: rgba(var(--shadow-rgb), 0.5);
+  --scrim-hero-mid: rgba(var(--shadow-rgb), 0.08);
+  --scrim-hero-low: rgba(var(--shadow-rgb), 0.1);
+  --scrim-hero-foot: rgba(var(--shadow-rgb), 0.62);
+  --hero-title-shadow: 0 2px 40px rgba(var(--shadow-rgb), 0.45);
+  --cue-track: rgba(var(--bone-rgb), 0.25);
+
+  /* Type scale. Every display size on the site resolves to one of these
+     rather than an ad-hoc clamp() written at the call site. */
+  --text-label: 11px;
+  --text-nav: 16px;
+  --text-body: 17px;
+  --text-body-lg: 1.125rem;
+  --text-h4: clamp(1.2rem, 2vw, 1.5rem);
+  --text-h3: clamp(1.25rem, 2.4vw, 1.7rem);
+  --text-h2: clamp(1.8rem, 3.8vw, 2.9rem);
+  --text-h1: clamp(2.6rem, 6.5vw, 5.2rem);
+  --text-hero: clamp(2.6rem, 8.5vw, 7.5rem);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -149,34 +221,145 @@
   }
 
   body {
-    background-color: var(--color-parchment-100);
-    color: var(--color-on-parch);
+    background-color: var(--color-paper);
+    color: var(--color-text);
     font-family: var(--font-sans);
-    font-size: 17px;
-    line-height: 1.7;
+    font-weight: 300;
+    font-size: var(--text-body);
+    /* Loose leading — the reference reads airy, and long bio paragraphs need
+       the room. */
+    line-height: 1.85;
     -webkit-font-smoothing: antialiased;
   }
 
   html {
     scroll-behavior: smooth;
   }
+
+  /* Display faces are optically large; let them set tight and unhyphenated. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+  }
 }
 
-/* Editorial utilities */
+/* Small caps label. Used for dates, venues, and section tags. */
 @utility eyebrow {
   font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+/* Gallery column flow. The plate library mixes 2:3, 3:2, 16:9, 2:1 and 1:1
+   frames; a rigid grid left holes wherever a landscape frame spanned two
+   cells. Columns let each frame keep its true crop and close the gaps. */
+@utility gallery-columns {
+  column-count: 1;
+  column-gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .gallery-columns {
+    column-count: 2;
+  }
+}
+@media (min-width: 1024px) {
+  .gallery-columns {
+    column-count: 3;
+    column-gap: 2rem;
+  }
+}
+
+/* Guarantees the 44px minimum touch target without changing how the
+   lettering looks — the hit area grows, the type does not. */
+@utility tap {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* Navigation and link lettering — light, wide, quiet. */
+@utility navlink {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--text-nav);
+  letter-spacing: 0.01em;
 }
 
 @utility reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(22px);
   transition:
-    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Route arrival. Short and shallow — a page should feel placed, not flown in. */
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.route-enter {
+  animation: route-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hero scroll cue: a hairline that travels down its own track and repeats. */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  55%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.scroll-cue {
+  animation: scroll-cue 2600ms cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+
+/* Underline that draws in from the leading edge on hover. */
+@utility link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Keyboard focus that is visible on both grounds without being loud.
+   Uses --color-rust and not --color-accent: shadcn owns --color-accent in
+   this stylesheet and resolves it to a pale grey-blue that all but vanished
+   on the paper ground. */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-rust);
+  outline-offset: 3px;
+  border-radius: 1px;
 }
 
 @utility revealed {
@@ -184,14 +367,203 @@
   transform: translateY(0);
 }
 
+/* ==========================================================================
+   MOTION VOCABULARY
+   Four moves, used everywhere, so the site reads as one hand rather than a
+   pile of effects. Everything is transform/opacity/clip-path only — no
+   layout properties animate — and everything is switched off further down
+   under prefers-reduced-motion.
+   ========================================================================== */
+
+/* 1. LIFT — display type rises out of a mask. The mask is what makes it
+      read as typesetting rather than a fade; the line is *revealed*, not
+      faded in. Set --lift-delay per word for a stagger. */
+.lift {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Fraunces descends below the baseline and the mask would guillotine the
+     tails of g, y and p. Pad the mask, then pull the padding back out of the
+     layout so the line height is untouched. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+/* The word gap is a margin rather than a space character. A space inside the
+   mask is collapsed away by overflow:hidden, and a non-breaking space stops
+   the headline wrapping — a margin does neither. */
+.lift[data-space="true"] {
+  margin-right: 0.26em;
+}
+.lift > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--lift-delay, 0ms);
+}
+/* `in` is set on the Lift container, not on each mask — the observer watches
+   the whole line so all its words release together. Both forms are matched so
+   a mask can also be driven on its own. */
+.in .lift > span,
+.lift.in > span {
+  transform: none;
+}
+
+/* 2. PLATE — a photograph wipes open from the bottom edge while the image
+      inside settles back from a slight over-scale. Two speeds moving
+      together is what stops it reading as a stock fade.
+
+      The `in` switch is always set on an ancestor, never on the clipped
+      element itself: Chromium applies a target's own clip-path when it
+      computes intersection area, so an IntersectionObserver watching a
+      fully-inset element measures zero area, never fires, and the plate
+      stays shut forever. */
+.plate {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1150ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--plate-delay, 0ms);
+}
+.plate > img,
+.plate > picture > img {
+  transform: scale(1.14);
+  transition: transform 1700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--plate-delay, 0ms);
+}
+.in .plate {
+  clip-path: inset(0 0 0 0);
+}
+.in .plate > img,
+.in .plate > picture > img {
+  transform: none;
+}
+
+/* The hover push rides `scale`, not `transform`, so it composes with the
+   arrival over-scale above instead of overwriting it. */
+.plate-zoom {
+  scale: 1;
+  transition: scale 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .plate-zoom,
+.group:focus-visible .plate-zoom {
+  scale: 1.05;
+}
+
+/* 3. RULE — a hairline draws itself across from the leading edge as its
+      section arrives, so every rule on the page is an event. */
+.rule-draw {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--rule-delay, 0ms);
+}
+.rule-draw.in {
+  transform: scaleX(1);
+}
+
+/* 4. DRIFT — the hero photograph breathes. Paired with the scroll parallax
+      on its wrapper, so the frame moves at one speed and the image inside
+      it at another. */
+@keyframes drift {
+  from {
+    transform: scale(1.03) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.13) translate3d(0, -1.2%, 0);
+  }
+}
+.drift {
+  animation: drift 26s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+/* Hero frames cross-dissolve on a long fade. Slow enough that the change
+   registers as light shifting on stage rather than as a slideshow. */
+.hero-frame {
+  opacity: 0;
+  transition: opacity 2000ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hero-frame[data-active="true"] {
+  opacity: 1;
+}
+
+/* Marquee. Two identical runs of the list translate by exactly half the
+   track, so the seam never arrives. Hovering holds it still for reading. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+.marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* An index row that dims its neighbours on hover, so the list resolves to
+   one line at a time instead of sitting there as a block. */
+.index-list:hover .index-row {
+  opacity: 0.38;
+}
+.index-list .index-row {
+  transition:
+    opacity 420ms ease,
+    color 420ms ease;
+}
+.index-list .index-row:hover,
+.index-list .index-row:focus-within {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .lift > span,
+  .plate,
+  .plate > img,
+  .rule-draw {
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+  .drift,
+  .marquee-track {
+    animation: none;
+  }
+  .plate-zoom,
+  .group:hover .plate-zoom {
+    scale: 1;
+    transition: none;
+  }
+  .hero-frame {
+    transition: none;
   }
   .reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .route-enter {
+    animation: none;
+  }
+  .link-underline::after {
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
